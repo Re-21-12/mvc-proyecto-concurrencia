@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/backenddb-c.props" />
+</Project>
