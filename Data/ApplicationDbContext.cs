@@ -47,6 +47,10 @@ public partial class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Bitacora>()
+        .Property(b => b.NumTransaccion)
+        .HasDefaultValueSql("SECUENCIA.NEXTVAL");
+
+        modelBuilder.Entity<BitacoraPago>()
             .Property(b => b.NumTransaccion)
             .HasDefaultValueSql("BITACORA_PAGO_SEQ.NEXTVAL");
         // inicio_sesion_secuencia

@@ -5,7 +5,7 @@ namespace backenddb_c.Models;
 
 public partial class Cliente
 {
-    public decimal CodigoCliente { get; set; }
+    public int CodigoCliente { get; set; }
 
     public string PrimerNombre { get; set; } = null!;
 

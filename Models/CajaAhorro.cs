@@ -9,7 +9,7 @@ public partial class CajaAhorro
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public decimal CodigoCaja { get; set; }
+    public int CodigoCaja { get; set; }
 
     public string Descripcion { get; set; } = null!;
 

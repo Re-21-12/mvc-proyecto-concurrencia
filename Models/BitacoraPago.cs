@@ -9,7 +9,7 @@ public partial class BitacoraPago
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public decimal? NumTransaccion { get; set; }
+    public int NumTransaccion { get; set; }
 
     public decimal? CodigoPrestamo { get; set; }
 

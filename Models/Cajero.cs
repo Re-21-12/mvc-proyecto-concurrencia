@@ -5,7 +5,7 @@ namespace backenddb_c.Models;
 
 public partial class Cajero
 {
-    public decimal CodigoCajero { get; set; }
+    public int CodigoCajero { get; set; }
 
     public string Ubicacion { get; set; } = null!;
 
