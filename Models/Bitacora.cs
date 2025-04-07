@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backenddb_c.Models;
 
 public partial class Bitacora
 {
+    [Key] // Marca este campo como clave primaria temporal
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // ← ¡Importante!
+    public int Id { get; set; } // Campo adicional para scaffolding
     public int NumTransaccion { get; set; }
 
     public string? NomTabla { get; set; }

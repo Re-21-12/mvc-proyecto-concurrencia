@@ -1,0 +1,150 @@
+@model TransferenciaViewModel
+@{
+    ViewData["Title"] = "Transferencia Bancaria";
+}
+
+<div class="container transferencia-container">
+    <div class="transferencia-header">
+        <h2 class="text-center mb-4"><i class="fas fa-exchange-alt"></i> Transferencia Bancaria</h2>
+        <div class="cajero-info mb-4">
+            <h5><i class="fas fa-atm"></i> Cajero: @ViewBag.CajeroUbicacion</h5>
+            <h5><i class="fas fa-wallet"></i> Saldo disponible: <span class="saldo-disponible">@ViewBag.SaldoFormateado</span></h5>
+        </div>
+    </div>
+
+    <div class="transferencia-card">
+        <form asp-action="Transferir" method="post" id="formTransferencia">
+            <input type="hidden" asp-for="CodigoCajero" />
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label asp-for="CodigoTitular" class="form-label">
+                            <i class="fas fa-user-tie"></i> Código del Titular
+                        </label>
+                        <input asp-for="CodigoTitular" class="form-control form-control-lg" 
+                               placeholder="Ingrese el código del titular">
+                        <span asp-validation-for="CodigoTitular" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="CodigoCuentaOrigen" class="form-label">
+                            <i class="fas fa-credit-card"></i> Cuenta Origen
+                        </label>
+                        <input asp-for="CodigoCuentaOrigen" class="form-control form-control-lg" 
+                               placeholder="Ingrese la cuenta de origen">
+                        <span asp-validation-for="CodigoCuentaOrigen" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label asp-for="CodigoCuentaDestino" class="form-label">
+                            <i class="fas fa-credit-card"></i> Cuenta Destino
+                        </label>
+                        <input asp-for="CodigoCuentaDestino" class="form-control form-control-lg" 
+                               placeholder="Ingrese la cuenta destino">
+                        <span asp-validation-for="CodigoCuentaDestino" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="Monto" class="form-label">
+                            <i class="fas fa-money-bill-wave"></i> Monto a Transferir
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input asp-for="Monto" class="form-control form-control-lg" 
+                                   placeholder="0.00" step="0.01">
+                        </div>
+                        <span asp-validation-for="Monto" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-transferir btn-lg">
+                    <i class="fas fa-paper-plane"></i> Confirmar Transferencia
+                </button>
+                <a asp-action="Details" asp-route-id="@Model.CodigoCajero" class="btn btn-cancelar btn-lg">
+                    <i class="fas fa-times-circle"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    @if (ViewBag.UltimasTransferencias != null && ViewBag.UltimasTransferencias.Count > 0)
+    {
+        <div class="mt-5">
+            <h4><i class="fas fa-history"></i> Últimas Transferencias</h4>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cuenta Origen</th>
+                            <th>Cuenta Destino</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transferencia in ViewBag.UltimasTransferencias)
+                        {
+                            <tr>
+                                <td>@transferencia.Fecha.ToString("g")</td>
+                                <td>@transferencia.CuentaDebitar</td>
+                                <td>@transferencia.CuentaAcreditar</td>
+                                <td>@transferencia.Monto.ToString("C2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Validación personalizada del monto
+            $.validator.addMethod("minValue", function(value, element, param) {
+                return this.optional(element) || parseFloat(value) >= param;
+            }, "El monto debe ser mayor a cero");
+
+            $("#formTransferencia").validate({
+                rules: {
+                    Monto: {
+                        required: true,
+                        number: true,
+                        minValue: 0.01
+                    },
+                    CodigoCuentaDestino: {
+                        notEqual: "#CodigoCuentaOrigen"
+                    }
+                },
+                messages: {
+                    Monto: {
+                        required: "Por favor ingrese un monto",
+                        number: "Por favor ingrese un número válido"
+                    },
+                    CodigoCuentaDestino: {
+                        notEqual: "No puede transferir a la misma cuenta"
+                    }
+                },
+                errorElement: "span",
+                errorPlacement: function(error, element) {
+                    error.addClass("text-danger");
+                    element.closest(".form-group").append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass("is-invalid").addClass("is-valid");
+                }
+            });
+        });
+    </script>
+}

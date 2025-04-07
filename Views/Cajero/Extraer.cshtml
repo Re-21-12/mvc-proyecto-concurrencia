@@ -1,0 +1,174 @@
+@model ExtraccionViewModel
+
+@{
+    ViewData["Title"] = "Extracción de Dinero";
+}
+
+<div class="container extraccion-container">
+    <div class="extraccion-header">
+        <h2 class="text-center mb-4"><i class="fas fa-money-bill-wave"></i> Extracción de Dinero</h2>
+        <div class="cajero-info mb-4">
+            <h5><i class="fas fa-atm"></i> Cajero: @ViewBag.CajeroUbicacion</h5>
+            <h5><i class="fas fa-wallet"></i> Saldo disponible: <span
+                    class="saldo-disponible">@ViewBag.SaldoDisponible</span></h5>
+        </div>
+    </div>
+
+    <div class="extraccion-card">
+        <form asp-action="Extraer" method="post" id="formExtraccion">
+            <input type="hidden" asp-for="CodigoCajero" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label asp-for="CodigoTitular" class="form-label">
+                            <i class="fas fa-user-tie"></i> Código del Titular
+                        </label>
+                        <input asp-for="CodigoTitular" class="form-control form-control-lg"
+                            placeholder="Ingrese el código del titular">
+                        <span asp-validation-for="CodigoTitular" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-4">
+                        <label asp-for="CodigoCuenta" class="form-label">
+                            <i class="fas fa-piggy-bank"></i> Cuenta de Ahorro
+                        </label>
+                        <input asp-for="CodigoCuenta" class="form-control form-control-lg"
+                            placeholder="Ingrese la cuenta de ahorro">
+                        <span asp-validation-for="CodigoCuenta" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-4">
+                <label asp-for="Monto" class="form-label">
+                    <i class="fas fa-coins"></i> Monto a Extraer
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input asp-for="Monto" class="form-control form-control-lg" placeholder="0.00" step="0.01">
+                </div>
+                <span asp-validation-for="Monto" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-extraer btn-lg">
+                    <i class="fas fa-hand-holding-usd"></i> Confirmar Extracción
+                </button>
+                <a asp-action="Details" asp-route-id="@Model.CodigoCajero" class="btn btn-cancelar btn-lg">
+                    <i class="fas fa-times-circle"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .extraccion-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .extraccion-header {
+            text-align: center;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .extraccion-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .cajero-info {
+            background-color: #e9f7fe;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .saldo-disponible {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .btn-extraer {
+            background-color: #17a2b8;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-extraer:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancelar {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-cancelar:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Validación personalizada del monto
+            $.validator.addMethod("minValue", function (value, element, param) {
+                return this.optional(element) || parseFloat(value) >= param;
+            }, "El monto debe ser mayor a cero");
+
+            $("#formExtraccion").validate({
+                rules: {
+                    Monto: {
+                        required: true,
+                        number: true,
+                        minValue: 0.01
+                    }
+                },
+                messages: {
+                    Monto: {
+                        required: "Por favor ingrese un monto",
+                        number: "Por favor ingrese un número válido"
+                    }
+                },
+                errorElement: "span",
+                errorPlacement: function (error, element) {
+                    error.addClass("text-danger");
+                    element.closest(".form-group").append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass("is-invalid").addClass("is-valid");
+                }
+            });
+        });
+    </script>
+}

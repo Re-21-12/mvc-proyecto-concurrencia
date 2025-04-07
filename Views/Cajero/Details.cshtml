@@ -1,0 +1,193 @@
+@model backenddb_c.Models.Cajero
+
+@{
+    ViewData["Title"] = "Detalles del Cajero";
+}
+
+<div class="container cajero-container">
+    <div class="cajero-header">
+        <h1 class="text-center mb-4"><i class="fas fa-atm"></i> Detalles del Cajero Automático</h1>
+        <hr class="cajero-divider">
+    </div>
+
+    <div class="cajero-card">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-group">
+                    <span class="info-label">Ubicación:</span>
+                    <span class="info-value">@Html.DisplayFor(model => model.Ubicacion)</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-group">
+                    <span class="info-label">Saldo Disponible:</span>
+                    <span class="info-value saldo">$@Html.DisplayFor(model => model.Saldo)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="operaciones-section mt-5">
+        <h3 class="text-center mb-4"><i class="fas fa-exchange-alt"></i> Operaciones Disponibles</h3>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="btn-group operaciones-group" role="group">
+                    <a asp-action="Transferir" asp-route-id="@Model?.CodigoCajero" class="btn btn-operacion transferir">
+                        <i class="fas fa-money-bill-wave"></i> Transferir
+                    </a>
+                    <a asp-action="Extraer" asp-route-id="@Model?.CodigoCajero" class="btn btn-operacion extraer">
+                        <i class="fas fa-hand-holding-usd"></i> Extraer
+                    </a>
+                    <a asp-action="PagarPrestamo" asp-route-id="@Model?.CodigoCajero"
+                        class="btn btn-operacion prestamo">
+                        <i class="fas fa-file-invoice-dollar"></i> Pagar Préstamo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-section mt-5 text-center">
+        <a asp-action="Edit" asp-route-id="@Model?.CodigoCajero" class="btn btn-editar">
+            <i class="fas fa-edit"></i> Editar Cajero
+        </a>
+        <a asp-action="Index" class="btn btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver a la Lista
+        </a>
+    </div>
+</div>
+
+<style>
+    .cajero-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .cajero-header h1 {
+        color: #2c3e50;
+        font-weight: 700;
+    }
+
+    .cajero-divider {
+        border-top: 2px solid #3498db;
+        opacity: 1;
+    }
+
+    .cajero-card {
+        background-color: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        margin-top: 20px;
+    }
+
+    .info-group {
+        margin-bottom: 15px;
+    }
+
+    .info-label {
+        display: block;
+        font-weight: 600;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .info-value {
+        display: block;
+        font-size: 1.2rem;
+        color: #2c3e50;
+    }
+
+    .saldo {
+        color: #27ae60;
+        font-weight: 700;
+        font-size: 1.4rem !important;
+    }
+
+    .operaciones-section {
+        background-color: #ecf0f1;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .btn-operacion {
+        padding: 12px 20px;
+        font-weight: 600;
+        border: none;
+        border-radius: 6px !important;
+        margin: 0 5px;
+        transition: all 0.3s;
+    }
+
+    .btn-operacion i {
+        margin-right: 8px;
+    }
+
+    .transferir {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .transferir:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+    }
+
+    .extraer {
+        background-color: #2ecc71;
+        color: white;
+    }
+
+    .extraer:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+    }
+
+    .prestamo {
+        background-color: #f39c12;
+        color: white;
+    }
+
+    .prestamo:hover {
+        background-color: #d35400;
+        transform: translateY(-2px);
+    }
+
+    .btn-editar {
+        background-color: #95a5a6;
+        color: white;
+        padding: 8px 20px;
+        margin-right: 10px;
+    }
+
+    .btn-editar:hover {
+        background-color: #7f8c8d;
+        color: white;
+    }
+
+    .btn-volver {
+        background-color: #bdc3c7;
+        color: #2c3e50;
+        padding: 8px 20px;
+    }
+
+    .btn-volver:hover {
+        background-color: #95a5a6;
+        color: white;
+    }
+
+    @@media (max-width: 768px) {
+        .operaciones-group {
+            flex-direction: column;
+        }
+
+        .btn-operacion {
+            margin: 5px 0;
+            width: 100%;
+        }
+    }
+</style>

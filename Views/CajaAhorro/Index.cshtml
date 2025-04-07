@@ -1,0 +1,47 @@
+@model IEnumerable<backenddb_c.Models.CajaAhorro>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SaldoCaja)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CodigoClienteNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SaldoCaja)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CodigoClienteNavigation.CodigoCliente)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CodigoCaja">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CodigoCaja">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CodigoCaja">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

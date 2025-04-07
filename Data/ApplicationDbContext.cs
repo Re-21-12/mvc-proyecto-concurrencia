@@ -52,8 +52,8 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Bitacora>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("BITACORA_PK"); // Nombre opcional para la PK
             entity
-                .HasNoKey()
                 .ToTable("BITACORA");
 
             entity.Property(e => e.FechaTransaccion)
@@ -94,8 +94,8 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<BitacoraPago>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("BITACORA_PAGO_PK");
             entity
-                .HasNoKey()
                 .ToTable("BITACORA_PAGO");
 
             entity.Property(e => e.CodigoPrestamo)
@@ -221,8 +221,9 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<InicioSesion>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("INICIO_SESION_PK");
+
             entity
-                .HasNoKey()
                 .ToTable("INICIO_SESION");
 
             entity.Property(e => e.CodigoCaja)

@@ -28,6 +28,114 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/BitacoraPago/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmFQYWdvL0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/BitacoraPago/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmFQYWdvL0RlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/BitacoraPago/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmFQYWdvL0RldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/BitacoraPago/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmFQYWdvL0VkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/BitacoraPago/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmFQYWdvL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/CajaAhorro/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqYUFob3Jyby9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/CajaAhorro/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqYUFob3Jyby9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/CajaAhorro/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqYUFob3Jyby9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/CajaAhorro/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqYUFob3Jyby9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/CajaAhorro/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqYUFob3Jyby9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL0RlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL0RldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL0VkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/Extraer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL0V4dHJhZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/Transferir.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL1RyYW5zZmVyaXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cliente/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50ZS9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cliente/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50ZS9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cliente/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50ZS9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cliente/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50ZS9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cliente/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50ZS9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -36,12 +144,152 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/InicioSesion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSW5pY2lvU2VzaW9uL0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/InicioSesion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSW5pY2lvU2VzaW9uL0RlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/InicioSesion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSW5pY2lvU2VzaW9uL0RldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/InicioSesion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSW5pY2lvU2VzaW9uL0VkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/InicioSesion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSW5pY2lvU2VzaW9uL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Movimiento/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTW92aW1pZW50by9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Movimiento/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTW92aW1pZW50by9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Movimiento/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTW92aW1pZW50by9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Movimiento/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTW92aW1pZW50by9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Movimiento/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTW92aW1pZW50by9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Operacion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3BlcmFjaW9uL0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Operacion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3BlcmFjaW9uL0RlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Operacion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3BlcmFjaW9uL0RldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Operacion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3BlcmFjaW9uL0VkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Operacion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvT3BlcmFjaW9uL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Pago/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnby9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Pago/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnby9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Pago/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnby9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Pago/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnby9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Pago/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnby9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Prestamo/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJlc3RhbW8vQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Prestamo/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJlc3RhbW8vRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Prestamo/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJlc3RhbW8vRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Prestamo/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJlc3RhbW8vRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Prestamo/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJlc3RhbW8vSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Tarjeta/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGFyamV0YS9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Tarjeta/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGFyamV0YS9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Tarjeta/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGFyamV0YS9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Tarjeta/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGFyamV0YS9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Tarjeta/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGFyamV0YS9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Titular/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGl0dWxhci9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Titular/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGl0dWxhci9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Titular/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGl0dWxhci9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Titular/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGl0dWxhci9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Titular/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVGl0dWxhci9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/_ViewImports.cshtml]
