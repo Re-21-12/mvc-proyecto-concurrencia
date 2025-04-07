@@ -112,6 +112,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/LoginTarjeta.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL0xvZ2luVGFyamV0YS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/PagarPrestamo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL1BhZ2FyUHJlc3RhbW8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Cajero/Transferir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2FqZXJvL1RyYW5zZmVyaXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

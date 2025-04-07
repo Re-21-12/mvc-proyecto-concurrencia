@@ -27,18 +27,38 @@ namespace backenddb_c.Controllers
         }
 
         // GET: Cajero/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, bool? fromLogin)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
+            // Si no viene del login y no tiene la tarjeta en sesión, redirigir a login
+            if (fromLogin != true && HttpContext.Session.GetString("TarjetaAutenticada") == null)
+            {
+                return RedirectToAction("LoginTarjeta", new { cajeroId = id });
+            }
+
             var cajero = await _context.Cajeros
                 .FirstOrDefaultAsync(m => m.CodigoCajero == id);
+
             if (cajero == null)
             {
                 return NotFound();
+            }
+
+            // Obtener información del titular desde la sesión
+            var numeroTarjeta = HttpContext.Session.GetInt32("NumeroTarjeta");
+            if (numeroTarjeta.HasValue)
+            {
+                var titular = await _context.Tarjeta
+                    .Where(t => t.NumeroTarjeta == numeroTarjeta)
+                    .Include(t => t.CodigoTitularNavigation)
+                    .Select(t => t.CodigoTitularNavigation)
+                    .FirstOrDefaultAsync();
+
+                ViewBag.NombreTitular = $"{titular.PrimerNombre} {titular.PrimerApellido}";
             }
 
             return View(cajero);
@@ -247,6 +267,98 @@ namespace backenddb_c.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> PagarPrestamo(int? id)
+        {
+            try
+            {
+                if (id == null || id <= 0)
+                {
+                    TempData["ErrorMessage"] = "ID de cajero no válido";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var cajero = await _context.Cajeros
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.CodigoCajero == id);
+
+                if (cajero == null)
+                {
+                    TempData["ErrorMessage"] = $"Cajero con ID {id} no encontrado";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ViewBag.SaldoDisponible = cajero.Saldo.ToString("C2");
+                return View(new PagoPrestamoViewModel { CodigoCajero = cajero.CodigoCajero });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al cargar el formulario de pago";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PagarPrestamo(PagoPrestamoViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                // Verificar saldo del cajero
+                var cajero = await _context.Cajeros.FindAsync(model.CodigoCajero);
+                if (cajero == null)
+                {
+                    ModelState.AddModelError("", "Cajero no encontrado");
+                    return View(model);
+                }
+
+                if (cajero.Saldo < model.Monto)
+                {
+                    ModelState.AddModelError("Monto", "El cajero no tiene suficiente saldo");
+                    ViewBag.SaldoDisponible = cajero.Saldo.ToString("C2");
+                    return View(model);
+                }
+
+                // Verificar que el préstamo existe
+                var prestamo = await _context.Prestamos
+                    .FirstOrDefaultAsync(p => p.CodigoPrestamo == model.CodigoPrestamo);
+
+                if (prestamo == null)
+                {
+                    ModelState.AddModelError("CodigoPrestamo", "Préstamo no encontrado");
+                    return View(model);
+                }
+
+                // Ejecutar el pago (el trigger se activará automáticamente)
+                var pago = new Pago
+                {
+                    CodigoPrestamo = model.CodigoPrestamo,
+                    MontoPago = model.Monto,
+                    FechaPago = DateTime.Now,
+                };
+
+                _context.Pagos.Add(pago);
+                await _context.SaveChangesAsync();
+
+                // Actualizar saldo del cajero
+                cajero.Saldo -= model.Monto;
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Pago de {model.Monto.ToString("C2")} aplicado al préstamo {model.CodigoPrestamo}";
+                return RedirectToAction("Details", new { id = model.CodigoCajero });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error al procesar el pago: {ex.Message}");
+                return View(model);
+            }
+        }
+
         // POST: Cajero/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -350,6 +462,74 @@ namespace backenddb_c.Controllers
         private bool CajeroExists(int id)
         {
             return _context.Cajeros.Any(e => e.CodigoCajero == id);
+        }
+        [HttpGet]
+        public IActionResult LoginTarjeta(int? cajeroId)
+        {
+            var model = new LoginTarjetaViewModel { CajeroId = cajeroId };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginTarjeta(LoginTarjetaViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                // Verificar tarjeta y PIN
+                var tarjetaValida = await _context.Tarjeta
+                    .AnyAsync(t => t.NumeroTarjeta == model.NumeroTarjeta && t.Pin == model.Pin);
+
+                if (!tarjetaValida)
+                {
+                    ModelState.AddModelError("", "Número de tarjeta o PIN incorrecto");
+                    return View(model);
+                }
+
+                // Registrar en bitácora (inicio_sesion)
+                var tarjeta = await _context.Tarjeta
+                    .Include(t => t.CodigoCajaNavigation)
+                    .FirstOrDefaultAsync(t => t.NumeroTarjeta == model.NumeroTarjeta);
+
+                // Aquí podrías llamar a tu procedimiento almacenado registrar_inicio_sesion
+                // Ejemplo simplificado:
+                var inicioSesion = new InicioSesion
+                {
+                    NumeroTarjeta = model.NumeroTarjeta,
+                    CodigoCaja = tarjeta.CodigoCaja,
+                    CodigoCliente = tarjeta.CodigoCajaNavigation.CodigoCliente,
+                    CodigoTitular = tarjeta.CodigoTitular,
+                    FechaHora = DateTime.Now
+                };
+
+                _context.InicioSesions.Add(inicioSesion);
+                await _context.SaveChangesAsync();
+
+                // Guardar en sesión
+                HttpContext.Session.SetString("TarjetaAutenticada", "true");
+                HttpContext.Session.SetInt32("NumeroTarjeta", model.NumeroTarjeta);
+
+                // Redirigir al Details con autenticación
+                return RedirectToAction("Details", new { id = model.CajeroId, fromLogin = true });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Error al procesar la autenticación");
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult LogoutTarjeta()
+        {
+            HttpContext.Session.Remove("TarjetaAutenticada");
+            HttpContext.Session.Remove("NumeroTarjeta");
+            return RedirectToAction("Index");
         }
     }
 }

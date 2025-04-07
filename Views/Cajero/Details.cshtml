@@ -1,10 +1,22 @@
 @model backenddb_c.Models.Cajero
-
 @{
     ViewData["Title"] = "Detalles del Cajero";
 }
 
 <div class="container cajero-container">
+
+    @if (ViewBag.NombreTitular != null)
+    {
+        <div class="alert alert-info mb-4">
+            <i class="fas fa-user"></i> Bienvenido: <strong>@ViewBag.NombreTitular</strong>
+            <form asp-action="LogoutTarjeta" method="post" class="float-end">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </form>
+        </div>
+    }
+
     <div class="cajero-header">
         <h1 class="text-center mb-4"><i class="fas fa-atm"></i> Detalles del Cajero Automático</h1>
         <hr class="cajero-divider">
