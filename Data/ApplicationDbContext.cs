@@ -42,31 +42,19 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
-        => optionsBuilder.UseOracle("DefaultConnection");
+        => optionsBuilder.UseOracle("User Id=BANCARIO;Password=Alfredo+123;Data Source=localhost:1521/FREE");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Bitacora>()
-        .Property(b => b.NumTransaccion)
-        .HasDefaultValueSql("SECUENCIA.NEXTVAL");
-
-        modelBuilder.Entity<BitacoraPago>()
-            .Property(b => b.NumTransaccion)
-            .HasDefaultValueSql("BITACORA_PAGO_SEQ.NEXTVAL");
-        // inicio_sesion_secuencia
-        modelBuilder.Entity<InicioSesion>()
-            .Property(b => b.Secuencia)
-            .HasDefaultValueSql("inicio_sesion_secuencia.NEXTVAL");
-
         modelBuilder
             .HasDefaultSchema("BANCARIO")
             .UseCollation("USING_NLS_COMP");
 
         modelBuilder.Entity<Bitacora>(entity =>
         {
-            entity.HasKey(e => e.NumTransaccion).HasName("BITACORA_PK");
-
-            entity.ToTable("BITACORA");
+            entity
+                .HasNoKey()
+                .ToTable("BITACORA");
 
             entity.Property(e => e.FechaTransaccion)
                 .HasColumnType("DATE")
@@ -148,30 +136,33 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<CajaAhorro>(entity =>
         {
             entity.HasKey(e => e.CodigoCaja).HasName("CAJA_AHORRO_PK");
-
             entity.ToTable("CAJA_AHORRO");
 
+            // Solo la clave primaria debe tener ValueGeneratedOnAdd
             entity.Property(e => e.CodigoCaja)
-                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CODIGO_CAJA");
+
+            // Estas propiedades NO deben tener ValueGeneratedOnAdd
             entity.Property(e => e.CodigoCliente)
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CODIGO_CLIENTE");
+
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("DESCRIPCION");
+
             entity.Property(e => e.SaldoCaja)
                 .HasColumnType("NUMBER(12,2)")
                 .HasColumnName("SALDO_CAJA");
 
-            entity.HasOne(d => d.CodigoClienteNavigation).WithMany(p => p.CajaAhorros)
+            entity.HasOne(d => d.CodigoClienteNavigation)
+                .WithMany(p => p.CajaAhorros)
                 .HasForeignKey(d => d.CodigoCliente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("CAJA_AHORRO_CLIENTE_FK");
         });
-
         modelBuilder.Entity<Cajero>(entity =>
         {
             entity.HasKey(e => e.CodigoCajero).HasName("CAJERO_PK");
@@ -179,7 +170,6 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("CAJERO");
 
             entity.Property(e => e.CodigoCajero)
-                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CODIGO_CAJERO");
             entity.Property(e => e.Saldo)
@@ -198,7 +188,6 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("CLIENTE");
 
             entity.Property(e => e.CodigoCliente)
-                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CODIGO_CLIENTE");
             entity.Property(e => e.Direccion)
@@ -263,7 +252,6 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("MOVIMIENTO");
 
             entity.Property(e => e.CodigoMovimiento)
-                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CODIGO_MOVIMIENTO");
             entity.Property(e => e.CodigoCajero)
@@ -307,7 +295,6 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("OPERACION");
 
             entity.Property(e => e.CodigoOperacion)
-                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CODIGO_OPERACION");
             entity.Property(e => e.CodigoCajero)
@@ -356,7 +343,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("PRESTAMO");
 
             entity.Property(e => e.CodigoPrestamo)
-                .ValueGeneratedOnAdd()
+
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CODIGO_PRESTAMO");
             entity.Property(e => e.CodigoCliente)
@@ -406,7 +393,6 @@ public partial class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.CodigoTitular, "SYS_C008902").IsUnique();
 
             entity.Property(e => e.NumeroTarjeta)
-                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("NUMERO_TARJETA");
             entity.Property(e => e.CodigoCaja)
@@ -444,7 +430,6 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("TITULAR");
 
             entity.Property(e => e.CodigoTitular)
-                .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER(38)")
                 .HasColumnName("CODIGO_TITULAR");
             entity.Property(e => e.Direccion)
@@ -483,5 +468,4 @@ public partial class ApplicationDbContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
 }

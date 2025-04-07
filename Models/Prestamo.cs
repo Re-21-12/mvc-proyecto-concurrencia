@@ -5,7 +5,7 @@ namespace backenddb_c.Models;
 
 public partial class Prestamo
 {
-    public decimal CodigoPrestamo { get; set; }
+    public int CodigoPrestamo { get; set; }
 
     public decimal MontoInicial { get; set; }
 
@@ -25,7 +25,7 @@ public partial class Prestamo
 
     public decimal MesesPendiente { get; set; }
 
-    public decimal CodigoCliente { get; set; }
+    public int CodigoCliente { get; set; }
 
     public virtual Cliente CodigoClienteNavigation { get; set; } = null!;
 

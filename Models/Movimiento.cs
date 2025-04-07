@@ -5,15 +5,15 @@ namespace backenddb_c.Models;
 
 public partial class Movimiento
 {
-    public decimal CodigoMovimiento { get; set; }
+    public int CodigoMovimiento { get; set; }
 
     public string TipoOperacion { get; set; } = null!;
 
     public DateTime Fecha { get; set; }
 
-    public decimal CodigoTitular { get; set; }
+    public int CodigoTitular { get; set; }
 
-    public decimal CodigoCajero { get; set; }
+    public int CodigoCajero { get; set; }
 
     public decimal? CuentaDebitar { get; set; }
 

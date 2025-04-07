@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backenddb_c.Models;
 
 public partial class CajaAhorro
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int CodigoCaja { get; set; }
 
     public string Descripcion { get; set; } = null!;
 
-    public decimal CodigoCliente { get; set; }
+    public int CodigoCliente { get; set; }
 
     public decimal? SaldoCaja { get; set; }
 

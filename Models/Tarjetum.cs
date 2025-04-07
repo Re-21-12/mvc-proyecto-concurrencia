@@ -5,7 +5,7 @@ namespace backenddb_c.Models;
 
 public partial class Tarjetum
 {
-    public decimal NumeroTarjeta { get; set; }
+    public int NumeroTarjeta { get; set; }
 
     public string Marca { get; set; } = null!;
 
@@ -13,9 +13,9 @@ public partial class Tarjetum
 
     public decimal Pin { get; set; }
 
-    public decimal CodigoCaja { get; set; }
+    public int CodigoCaja { get; set; }
 
-    public decimal CodigoTitular { get; set; }
+    public int CodigoTitular { get; set; }
 
     public virtual CajaAhorro CodigoCajaNavigation { get; set; } = null!;
 

@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backenddb_c.Models;
 
 public partial class BitacoraPago
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int NumTransaccion { get; set; }
 
     public decimal? CodigoPrestamo { get; set; }

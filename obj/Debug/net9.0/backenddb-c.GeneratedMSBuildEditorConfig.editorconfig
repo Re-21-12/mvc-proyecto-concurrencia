@@ -28,26 +28,6 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvQ3JlYXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvRGVsZXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvRGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvRWRpdC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Bitacora/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQml0YWNvcmEvSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [/home/esotulin_revived/Desktop/backend-bd-v2/backenddb-c/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
