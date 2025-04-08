@@ -1,4 +1,4 @@
-@model backenddb_c.Models.Cajero
+@model CajeroViewModel
 @{
     ViewData["Title"] = "Detalles del Cajero";
 }
@@ -18,7 +18,7 @@
     }
 
     <div class="cajero-header">
-        <h1 class="text-center mb-4"><i class="fas fa-atm"></i> Detalles del Cajero Automático</h1>
+        <h1 class="text-center mb-4"><i class="fas fa-atm"></i> Cajero Automático</h1>
         <hr class="cajero-divider">
     </div>
 
@@ -28,12 +28,20 @@
                 <div class="info-group">
                     <span class="info-label">Ubicación:</span>
                     <span class="info-value">@Html.DisplayFor(model => model.Ubicacion)</span>
+
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="info-group">
-                    <span class="info-label">Saldo Disponible:</span>
+                    <span class="info-label">Saldo del Cajero Disponible:</span>
                     <span class="info-value saldo">$@Html.DisplayFor(model => model.Saldo)</span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="info-group">
+                    <span class="info-label">Saldo de la Cuenta:</span>
+                    <span class="info-value">$@Html.DisplayFor(model => model.SaldoCaja)</span>
                 </div>
             </div>
         </div>

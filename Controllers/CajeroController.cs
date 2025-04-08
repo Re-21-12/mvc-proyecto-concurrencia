@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using backenddb_c.Data;
 using backenddb_c.Models;
-using Microsoft.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
 
 namespace backenddb_c.Controllers
 {
@@ -26,42 +26,136 @@ namespace backenddb_c.Controllers
             return View(await _context.Cajeros.ToListAsync());
         }
 
-        // GET: Cajero/Details/5
-        public async Task<IActionResult> Details(int? id, bool? fromLogin)
+        // GET: Cajero/InicioSesion/5
+        public async Task<IActionResult> InicioSesion(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            // Si no viene del login y no tiene la tarjeta en sesión, redirigir a login
-            if (fromLogin != true && HttpContext.Session.GetString("TarjetaAutenticada") == null)
+            // Verificar que el cajero existe
+            var cajeroExists = await _context.Cajeros.AnyAsync(c => c.CodigoCajero == id);
+            if (!cajeroExists)
             {
-                return RedirectToAction("LoginTarjeta", new { cajeroId = id });
+                return NotFound();
+            }
+
+            var model = new LoginTarjetaViewModel
+            {
+                CajeroId = id.Value
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InicioSesion(LoginTarjetaViewModel model)
+        {
+            try
+            {
+                // Verificar que el modelo tiene el CajeroId
+                if (model.CajeroId <= 0)
+                {
+                    TempData["ErrorMessage"] = "Cajero no especificado";
+                    return View(model);
+                }
+
+                // Verificar que el cajero existe
+                var cajeroExiste = await _context.Cajeros.AnyAsync(c => c.CodigoCajero == model.CajeroId);
+                if (!cajeroExiste)
+                {
+                    TempData["ErrorMessage"] = "Cajero no encontrado";
+                    return View(model);
+                }
+
+                // Verificar tarjeta
+                var tarjetaExiste = await _context.Tarjeta.AnyAsync(t => t.NumeroTarjeta == model.NumeroTarjeta);
+                if (!tarjetaExiste)
+                {
+                    TempData["ErrorMessage"] = "Tarjeta no encontrada";
+                    return View(model);
+                }
+                var tarjeta = await _context.Tarjeta.FirstOrDefaultAsync(t => t.NumeroTarjeta == model.NumeroTarjeta);
+                if (tarjeta.CodigoCaja == null)
+                {
+                    TempData["ErrorMessage"] = "La tarjeta no pertenece a este cajero";
+                    return View(model);
+                }
+                var tarjetaCodigoCaja = tarjeta.CodigoCaja;
+
+
+                // Ejecutar procedimiento almacenado con manejo explícito de errores
+                try
+                {
+                    var parameters = new[]
+                    {
+                        new OracleParameter("p_numero_tarjeta", model.NumeroTarjeta),
+                        new OracleParameter("p_pin", model.Pin)
+                    };
+
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "BEGIN registrar_inicio_sesion(:p_numero_tarjeta, :p_pin); END;",
+                        parameters
+                    );
+
+                    // Redirección a Details
+                    return RedirectToAction("Details", new
+                    {
+                        id = model.CajeroId,
+                        tarjetaCodigoCaja = tarjetaCodigoCaja
+                    });
+                }
+                catch (OracleException ex)
+                {
+                    Console.WriteLine($"Error en SP: {ex.Message}");
+                    TempData["ErrorMessage"] = "Error en validación: " + ex.Message;
+                    return View(model);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error general: {ex.Message}");
+                TempData["ErrorMessage"] = "Error inesperado: " + ex.Message;
+                return View(model);
+            }
+        }
+
+        // GET: Cajero/Details/5
+        public async Task<IActionResult> Details(int? id, int? tarjetaCodigoCaja)
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
 
             var cajero = await _context.Cajeros
                 .FirstOrDefaultAsync(m => m.CodigoCajero == id);
-
             if (cajero == null)
             {
                 return NotFound();
             }
 
-            // Obtener información del titular desde la sesión
-            var numeroTarjeta = HttpContext.Session.GetInt32("NumeroTarjeta");
-            if (numeroTarjeta.HasValue)
+            var model = new CajeroViewModel
             {
-                var titular = await _context.Tarjeta
-                    .Where(t => t.NumeroTarjeta == numeroTarjeta)
-                    .Include(t => t.CodigoTitularNavigation)
-                    .Select(t => t.CodigoTitularNavigation)
-                    .FirstOrDefaultAsync();
+                CodigoCajero = cajero.CodigoCajero,
+                Ubicacion = cajero.Ubicacion,
+                Saldo = cajero.Saldo,
+                SaldoCaja = 0 // Valor por defecto
+            };
 
-                ViewBag.NombreTitular = $"{titular.PrimerNombre} {titular.PrimerApellido}";
+            if (tarjetaCodigoCaja.HasValue)
+            {
+                var cajaAhorro = await _context.CajaAhorros
+                    .FirstOrDefaultAsync(m => m.CodigoCaja == tarjetaCodigoCaja.Value);
+
+                if (cajaAhorro != null)
+                {
+                    model.SaldoCaja = cajaAhorro.SaldoCaja;
+                }
             }
 
-            return View(cajero);
+            return View(model);
         }
 
         [HttpGet]
@@ -146,16 +240,17 @@ namespace backenddb_c.Controllers
                 // Ejecutar el stored procedure de transferencia
                 var parameters = new[]
                 {
-            new SqlParameter("@p_codigo_titular", model.CodigoTitular),
-            new SqlParameter("@p_codigo_origen", model.CodigoCuentaOrigen),
-            new SqlParameter("@p_codigo_destino", model.CodigoCuentaDestino),
-            new SqlParameter("@p_monto", model.Monto),
-            new SqlParameter("@p_codigo_cajero", model.CodigoCajero)
-        };
+                    new OracleParameter("p_codigo_titular", model.CodigoTitular),
+                    new OracleParameter("p_codigo_origen", model.CodigoCuentaOrigen),
+                    new OracleParameter("p_codigo_destino", model.CodigoCuentaDestino),
+                    new OracleParameter("p_monto", model.Monto),
+                    new OracleParameter("p_codigo_cajero", model.CodigoCajero)
+                };
 
                 await _context.Database.ExecuteSqlRawAsync(
-                    "EXEC realizar_transferencia @p_codigo_titular, @p_codigo_origen, @p_codigo_destino, @p_monto, @p_codigo_cajero",
-                    parameters);
+                    "BEGIN realizar_transferencia(:p_codigo_titular, :p_codigo_origen, :p_codigo_destino, :p_monto, :p_codigo_cajero); END;",
+                    parameters
+                );
 
                 TempData["SuccessMessage"] = $"Transferencia exitosa por {model.Monto.ToString("C2")}";
                 return RedirectToAction("Details", new { id = model.CodigoCajero });
@@ -215,6 +310,7 @@ namespace backenddb_c.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Extraer(ExtraccionViewModel model)
@@ -244,13 +340,16 @@ namespace backenddb_c.Controllers
                 // Ejecutar el stored procedure
                 var parameters = new[]
                 {
-            new SqlParameter("@p_codigo_titular", model.CodigoTitular),
-            new SqlParameter("@p_codigo_caja", model.CodigoCuenta),
-            new SqlParameter("@p_monto", model.Monto),
-            new SqlParameter("@p_codigo_cajero", model.CodigoCajero)
-        };
+                    new OracleParameter("p_codigo_titular", model.CodigoTitular),
+                    new OracleParameter("p_codigo_caja", model.CodigoCuenta),
+                    new OracleParameter("p_monto", model.Monto),
+                    new OracleParameter("p_codigo_cajero", model.CodigoCajero)
+                };
 
-                await _context.Database.ExecuteSqlRawAsync("EXEC realizar_extraccion @p_codigo_titular, @p_codigo_caja, @p_monto, @p_codigo_cajero", parameters);
+                await _context.Database.ExecuteSqlRawAsync(
+                    "BEGIN realizar_extraccion(:p_codigo_titular, :p_codigo_caja, :p_monto, :p_codigo_cajero); END;",
+                    parameters
+                );
 
                 TempData["SuccessMessage"] = $"Extracción exitosa por {model.Monto.ToString("C2")}";
                 return RedirectToAction("Details", new { id = model.CodigoCajero });
@@ -261,6 +360,7 @@ namespace backenddb_c.Controllers
                 return View(model);
             }
         }
+
         // GET: Cajero/Create
         public IActionResult Create()
         {
@@ -360,8 +460,6 @@ namespace backenddb_c.Controllers
         }
 
         // POST: Cajero/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CodigoCajero,Ubicacion,Saldo")] Cajero cajero)
@@ -392,8 +490,6 @@ namespace backenddb_c.Controllers
         }
 
         // POST: Cajero/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CodigoCajero,Ubicacion,Saldo")] Cajero cajero)
@@ -462,74 +558,6 @@ namespace backenddb_c.Controllers
         private bool CajeroExists(int id)
         {
             return _context.Cajeros.Any(e => e.CodigoCajero == id);
-        }
-        [HttpGet]
-        public IActionResult LoginTarjeta(int? cajeroId)
-        {
-            var model = new LoginTarjetaViewModel { CajeroId = cajeroId };
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginTarjeta(LoginTarjetaViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            try
-            {
-                // Verificar tarjeta y PIN
-                var tarjetaValida = await _context.Tarjeta
-                    .AnyAsync(t => t.NumeroTarjeta == model.NumeroTarjeta && t.Pin == model.Pin);
-
-                if (!tarjetaValida)
-                {
-                    ModelState.AddModelError("", "Número de tarjeta o PIN incorrecto");
-                    return View(model);
-                }
-
-                // Registrar en bitácora (inicio_sesion)
-                var tarjeta = await _context.Tarjeta
-                    .Include(t => t.CodigoCajaNavigation)
-                    .FirstOrDefaultAsync(t => t.NumeroTarjeta == model.NumeroTarjeta);
-
-                // Aquí podrías llamar a tu procedimiento almacenado registrar_inicio_sesion
-                // Ejemplo simplificado:
-                var inicioSesion = new InicioSesion
-                {
-                    NumeroTarjeta = model.NumeroTarjeta,
-                    CodigoCaja = tarjeta.CodigoCaja,
-                    CodigoCliente = tarjeta.CodigoCajaNavigation.CodigoCliente,
-                    CodigoTitular = tarjeta.CodigoTitular,
-                    FechaHora = DateTime.Now
-                };
-
-                _context.InicioSesions.Add(inicioSesion);
-                await _context.SaveChangesAsync();
-
-                // Guardar en sesión
-                HttpContext.Session.SetString("TarjetaAutenticada", "true");
-                HttpContext.Session.SetInt32("NumeroTarjeta", model.NumeroTarjeta);
-
-                // Redirigir al Details con autenticación
-                return RedirectToAction("Details", new { id = model.CajeroId, fromLogin = true });
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "Error al procesar la autenticación");
-                return View(model);
-            }
-        }
-
-        [HttpPost]
-        public IActionResult LogoutTarjeta()
-        {
-            HttpContext.Session.Remove("TarjetaAutenticada");
-            HttpContext.Session.Remove("NumeroTarjeta");
-            return RedirectToAction("Index");
         }
     }
 }

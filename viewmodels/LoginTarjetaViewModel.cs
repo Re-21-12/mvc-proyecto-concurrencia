@@ -12,5 +12,8 @@ public class LoginTarjetaViewModel
     [Range(1000, 9999, ErrorMessage = "El PIN debe ser de 4 dígitos")]
     public int Pin { get; set; }
 
+    public decimal? Saldo { get; set; } // Saldo de la tarjeta
+    public decimal? SaldoCaja { get; set; } // Saldo de la tarjeta
+
     public int? CajeroId { get; set; } // Para redirigir después del login
 }
