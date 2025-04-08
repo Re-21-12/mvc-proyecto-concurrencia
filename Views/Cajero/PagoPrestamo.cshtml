@@ -1,13 +1,11 @@
-@model ExtraccionViewModel
-<!-- Incluir el modal de confirmación -->
-@Html.Partial("_ConfirmacionModal")
+@model PagoPrestamoViewModel
 @{
-    ViewData["Title"] = "Extracción de Dinero";
+    ViewData["Title"] = "Pago de Préstamo";
 }
 
-<div class="container extraccion-container">
-    <div class="extraccion-header">
-        <h2 class="text-center mb-4"><i class="fas fa-money-bill-wave"></i> Extracción de Dinero</h2>
+<div class="container pago-container">
+    <div class="pago-header">
+        <h2 class="text-center mb-4"><i class="fas fa-file-invoice-dollar"></i> Pago de Préstamo</h2>
         <div class="cajero-info mb-4">
             <h5><i class="fas fa-atm"></i> Cajero: @ViewBag.CajeroUbicacion</h5>
             <h5><i class="fas fa-wallet"></i> Saldo disponible: <span
@@ -15,37 +13,22 @@
         </div>
     </div>
 
-    <div class="extraccion-card">
-        <form asp-action="Extraer" method="post" id="formExtraccion">
+    <div class="pago-card">
+        <form asp-action="PagoPrestamo" method="post" id="formPago">
             <input type="hidden" asp-for="CodigoCajero" />
 
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label asp-for="CodigoTitular" class="form-label">
-                            <i class="fas fa-user-tie"></i> Código del Titular
-                        </label>
-                        <input asp-for="CodigoTitular" class="form-control form-control-lg"
-                            placeholder="Ingrese el código del titular">
-                        <span asp-validation-for="CodigoTitular" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label asp-for="CodigoCuenta" class="form-label">
-                            <i class="fas fa-piggy-bank"></i> Cuenta de Ahorro
-                        </label>
-                        <input asp-for="CodigoCuenta" class="form-control form-control-lg"
-                            placeholder="Ingrese la cuenta de ahorro">
-                        <span asp-validation-for="CodigoCuenta" class="text-danger"></span>
-                    </div>
-                </div>
+            <div class="form-group mb-4">
+                <label asp-for="CodigoPrestamo" class="form-label">
+                    <i class="fas fa-hand-holding-usd"></i> Código de Préstamo
+                </label>
+                <input asp-for="CodigoPrestamo" class="form-control form-control-lg"
+                    placeholder="Ingrese el código del préstamo">
+                <span asp-validation-for="CodigoPrestamo" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-4">
                 <label asp-for="Monto" class="form-label">
-                    <i class="fas fa-coins"></i> Monto a Extraer
+                    <i class="fas fa-money-bill-wave"></i> Monto a Pagar
                 </label>
                 <div class="input-group">
                     <span class="input-group-text">$</span>
@@ -55,8 +38,8 @@
             </div>
 
             <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-extraer btn-lg">
-                    <i class="fas fa-hand-holding-usd"></i> Confirmar Extracción
+                <button type="submit" class="btn btn-pagar btn-lg">
+                    <i class="fas fa-check-circle"></i> Confirmar Pago
                 </button>
                 <a asp-action="Details" asp-route-id="@Model.CodigoCajero" class="btn btn-cancelar btn-lg">
                     <i class="fas fa-times-circle"></i> Cancelar
@@ -68,8 +51,8 @@
 
 @section Styles {
     <style>
-        .extraccion-container {
-            max-width: 800px;
+        .pago-container {
+            max-width: 600px;
             margin: 30px auto;
             padding: 20px;
             background-color: #f8f9fa;
@@ -77,7 +60,7 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
-        .extraccion-header {
+        .pago-header {
             text-align: center;
             padding: 20px;
             background-color: #ffffff;
@@ -85,35 +68,23 @@
             margin-bottom: 20px;
         }
 
-        .extraccion-card {
+        .pago-card {
             background-color: white;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
-        .cajero-info {
-            background-color: #e9f7fe;
-            padding: 15px;
-            border-radius: 6px;
-            border-left: 4px solid #3498db;
-        }
-
-        .saldo-disponible {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .btn-extraer {
-            background-color: #17a2b8;
+        .btn-pagar {
+            background-color: #28a745;
             color: white;
             padding: 12px;
             font-weight: 600;
             transition: all 0.3s;
         }
 
-        .btn-extraer:hover {
-            background-color: #138496;
+        .btn-pagar:hover {
+            background-color: #218838;
             transform: translateY(-2px);
         }
 
@@ -144,7 +115,7 @@
                 return this.optional(element) || parseFloat(value) >= param;
             }, "El monto debe ser mayor a cero");
 
-            $("#formExtraccion").validate({
+            $("#formPago").validate({
                 rules: {
                     Monto: {
                         required: true,
@@ -169,17 +140,6 @@
                 unhighlight: function (element, errorClass, validClass) {
                     $(element).removeClass("is-invalid").addClass("is-valid");
                 }
-            });
-            // Interceptar el envío del formulario
-            $('#formExtraccion').submit(function (e) {
-                e.preventDefault(); // Prevenir el envío automático
-                $('#confirmacionModal').modal('show'); // Mostrar el modal de confirmación
-
-                // Manejar el clic en el botón "Confirmar"
-                $('#btnConfirmar').click(function () {
-                    $('#confirmacionModal').modal('hide'); // Ocultar el modal
-                    $('#formTransferencia').unbind('submit').submit(); // Enviar el formulario
-                });
             });
         });
     </script>

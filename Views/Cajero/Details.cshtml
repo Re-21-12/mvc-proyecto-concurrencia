@@ -52,14 +52,15 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="btn-group operaciones-group" role="group">
-                    <a asp-action="Transferir" asp-route-id="@Model?.CodigoCajero" class="btn btn-operacion transferir">
+                    <a asp-action="Transferir" asp-route-id="@Model?.CodigoCajero"
+                        asp-route-numeroTarjeta="@Model.NumeroTarjeta" class="btn btn-operacion transferir">
                         <i class="fas fa-money-bill-wave"></i> Transferir
                     </a>
                     <a asp-action="Extraer" asp-route-id="@Model?.CodigoCajero" class="btn btn-operacion extraer">
                         <i class="fas fa-hand-holding-usd"></i> Extraer
                     </a>
-                    <a asp-action="PagarPrestamo" asp-route-id="@Model?.CodigoCajero"
-                        class="btn btn-operacion prestamo">
+                    <a asp-action="PagoPrestamo" asp-route-id="@Model?.CodigoCajero"
+                        asp-route-numeroTarjeta="@Model.NumeroTarjeta" class="btn btn-operacion prestamo">
                         <i class="fas fa-file-invoice-dollar"></i> Pagar Préstamo
                     </a>
                 </div>

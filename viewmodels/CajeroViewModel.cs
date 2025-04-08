@@ -6,6 +6,8 @@ public class CajeroViewModel
 
     public decimal? SaldoCaja { get; set; } // Saldo de la tarjeta
     public int CodigoCajero { get; set; }
+    public int NumeroTarjeta { get; set; }
+
 
     public string Ubicacion { get; set; } = null!;
 

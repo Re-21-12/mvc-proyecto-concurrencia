@@ -141,7 +141,8 @@ namespace backenddb_c.Controllers
                 CodigoCajero = cajero.CodigoCajero,
                 Ubicacion = cajero.Ubicacion,
                 Saldo = cajero.Saldo,
-                SaldoCaja = 0 // Valor por defecto
+                SaldoCaja = 0, // Valor por defecto
+                NumeroTarjeta = tarjetaCodigoCaja ?? 0
             };
 
             if (tarjetaCodigoCaja.HasValue)
@@ -159,7 +160,7 @@ namespace backenddb_c.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Transferir(int? id)
+        public async Task<IActionResult> Transferir(int? id, int? NumeroTarjeta)
         {
             try
             {
@@ -169,21 +170,34 @@ namespace backenddb_c.Controllers
                     TempData["ErrorMessage"] = "ID de cajero no válido";
                     return RedirectToAction(nameof(Index));
                 }
-
+                if (NumeroTarjeta == null || NumeroTarjeta < 0)
+                {
+                    TempData["ErrorMessage"] = "Numero de Tarjeta no válido";
+                    return RedirectToAction(nameof(Index));
+                }
                 // Obtener información del cajero
                 var cajero = await _context.Cajeros
                     .AsNoTracking()
                     .FirstOrDefaultAsync(c => c.CodigoCajero == id);
+
+                var caja_ahorro = await _context.CajaAhorros
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.CodigoCaja == NumeroTarjeta);
+
 
                 if (cajero == null)
                 {
                     TempData["ErrorMessage"] = $"Cajero con ID {id} no encontrado";
                     return RedirectToAction(nameof(Index));
                 }
-
+                if (caja_ahorro == null)
+                {
+                    TempData["ErrorMessage"] = $"Caja de Ahorro con Numero de Tarjeta {id} no encontrado";
+                    return RedirectToAction(nameof(Index));
+                }
                 // Preparar ViewBag con datos para la vista
+                ViewBag.SaldoFormateado = caja_ahorro.SaldoCaja?.ToString("C2");
                 ViewBag.CajeroUbicacion = cajero.Ubicacion;
-                ViewBag.SaldoFormateado = cajero.Saldo.ToString("C2");
 
                 // Obtener últimas transferencias de este cajero
                 ViewBag.UltimasTransferencias = await _context.Movimientos
@@ -366,29 +380,40 @@ namespace backenddb_c.Controllers
         {
             return View();
         }
-
+        // TODO: Cambiar esta implementacion por el uso de procedimientos almacenados
         [HttpGet]
-        public async Task<IActionResult> PagarPrestamo(int? id)
+        public async Task<IActionResult> PagoPrestamo(int? id, int? Numerotarjeta)
         {
             try
             {
-                if (id == null || id <= 0)
+                if (Numerotarjeta == null || id < 0)
                 {
-                    TempData["ErrorMessage"] = "ID de cajero no válido";
+                    TempData["ErrorMessage"] = "Codigo de tarjeta  no válido";
                     return RedirectToAction(nameof(Index));
                 }
+
+                var CajaAhorro = await _context.CajaAhorros
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.CodigoCaja == Numerotarjeta);
 
                 var cajero = await _context.Cajeros
                     .AsNoTracking()
                     .FirstOrDefaultAsync(c => c.CodigoCajero == id);
 
+                if (CajaAhorro == null)
+                {
+                    TempData["ErrorMessage"] = $"Caja de Ahorro {Numerotarjeta} no encontrado";
+                    return RedirectToAction(nameof(Index));
+                }
                 if (cajero == null)
                 {
                     TempData["ErrorMessage"] = $"Cajero con ID {id} no encontrado";
                     return RedirectToAction(nameof(Index));
                 }
+                ViewBag.SaldoDisponible = CajaAhorro.SaldoCaja?.ToString("C2");
 
-                ViewBag.SaldoDisponible = cajero.Saldo.ToString("C2");
+
+
                 return View(new PagoPrestamoViewModel { CodigoCajero = cajero.CodigoCajero });
             }
             catch (Exception ex)
@@ -400,7 +425,7 @@ namespace backenddb_c.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PagarPrestamo(PagoPrestamoViewModel model)
+        public async Task<IActionResult> PagoPrestamo(PagoPrestamoViewModel model)
         {
             try
             {
@@ -410,17 +435,17 @@ namespace backenddb_c.Controllers
                 }
 
                 // Verificar saldo del cajero
-                var cajero = await _context.Cajeros.FindAsync(model.CodigoCajero);
-                if (cajero == null)
+                var CajaAhrro = await _context.CajaAhorros.FindAsync(model.CodigoCajero);
+                if (CajaAhrro == null)
                 {
-                    ModelState.AddModelError("", "Cajero no encontrado");
+                    ModelState.AddModelError("", "Caja de Ahorro no encontrado");
                     return View(model);
                 }
 
-                if (cajero.Saldo < model.Monto)
+                if (CajaAhrro.SaldoCaja < model.Monto)
                 {
                     ModelState.AddModelError("Monto", "El cajero no tiene suficiente saldo");
-                    ViewBag.SaldoDisponible = cajero.Saldo.ToString("C2");
+                    ViewBag.SaldoDisponible = CajaAhrro.SaldoCaja?.ToString("C2");
                     return View(model);
                 }
 
@@ -445,8 +470,7 @@ namespace backenddb_c.Controllers
                 _context.Pagos.Add(pago);
                 await _context.SaveChangesAsync();
 
-                // Actualizar saldo del cajero
-                cajero.Saldo -= model.Monto;
+                CajaAhrro.SaldoCaja -= model.Monto;
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = $"Pago de {model.Monto.ToString("C2")} aplicado al préstamo {model.CodigoPrestamo}";
