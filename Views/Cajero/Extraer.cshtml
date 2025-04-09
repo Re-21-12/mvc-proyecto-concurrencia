@@ -38,8 +38,7 @@
                         <i class="fas fa-hand-holding-usd"></i> Confirmar Extracción
                     </button>
                     <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
-                        asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja" 
-                        class="btn btn-cancelar btn-lg">
+                        asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja" class="btn btn-cancelar btn-lg">
                         <i class="fas fa-times-circle"></i> Cancelar
                     </a>
                 </div>
@@ -74,10 +73,9 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-1"></i> Cancelar
                 </button>
-                <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
-                    asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja class=" btn btn-extraer btn-lg">
+                <button type="button" id="btnConfirmar" class="btn btn-success">
                     <i class="fas fa-check me-1"></i> Confirmar
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -156,7 +154,6 @@
         }
     </style>
 }
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -204,7 +201,7 @@
 
                 // Actualizar datos en el modal
                 $('#modalTitular').text($('#CodigoTitular').val());
-                $('#modalCuenta').text($('#CodigoCuenta').val());
+                $('#modalCuenta').text($('#tarjetaCodigoCaja').val());
                 $('#modalMonto').text('$' + parseFloat($('#Monto').val()).toFixed(2));
 
                 $('#confirmacionModal').modal('show'); // Mostrar el modal de confirmación
@@ -216,9 +213,10 @@
                 $('#formExtraccion').unbind('submit').submit(); // Enviar el formulario
             });
 
-            // Limpiar eventos al cerrar el modal
-            $('#confirmacionModal').on('hidden.bs.modal', function () {
-                $('#btnConfirmar').off('click');
+            // Botón Cancelar en el modal
+            $('.btn-secondary[data-bs-dismiss="modal"]').click(function () {
+                // Redirigir a Details al cancelar
+                window.location.href = '@Url.Action("Details", new { id = Model.CodigoCajero, tarjetaCodigoCaja = Model.tarjetaCodigoCaja })';
             });
         });
     </script>

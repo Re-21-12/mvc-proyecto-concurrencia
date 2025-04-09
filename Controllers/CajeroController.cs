@@ -354,6 +354,7 @@ namespace backenddb_c.Controllers
                     CodigoCajero = cajero.CodigoCajero,
                     tarjetaCodigoCaja = tarjetaCodigoCaja ?? 0,
                     CodigoTitular = tarjeta.CodigoTitular,
+                    Numerotarjeta = Numerotarjeta ?? 0,
 
                 };
                 return View(model);
@@ -406,7 +407,7 @@ namespace backenddb_c.Controllers
                 );
 
                 TempData["SuccessMessage"] = $"Extracción exitosa por {model.Monto.ToString("C2")}";
-                return RedirectToAction("Details", new { id = model.CodigoCajero });
+                return RedirectToAction("Details", new { id = model.CodigoCajero, tarjetaCodigoCaja = model.tarjetaCodigoCaja, Numerotarjeta = model.Numerotarjeta });
             }
             catch (Exception ex)
             {
