@@ -12,6 +12,7 @@ public class CajeroViewModel
     public string Ubicacion { get; set; } = null!;
 
     public decimal Saldo { get; set; }
+    public int tarjetaCodigoCaja { get; set; }
 
     public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
 

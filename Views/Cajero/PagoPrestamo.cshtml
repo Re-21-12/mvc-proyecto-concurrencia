@@ -3,105 +3,92 @@
     ViewData["Title"] = "Pago de Préstamo";
 }
 
-<div class="container pago-container">
-    <div class="pago-header">
-        <h2 class="text-center mb-4"><i class="fas fa-file-invoice-dollar"></i> Pago de Préstamo</h2>
-        <div class="cajero-info mb-4">
-            <h5><i class="fas fa-wallet"></i> Saldo disponible del Cliente: <span
-                    class="saldo-disponible">@ViewBag.SaldoDisponible</span></h5>
-        </div>
-    </div>
-
-    <div class="pago-card">
-        <form asp-action="PagoPrestamo" method="post" id="formPago">
-            <input type="hidden" asp-for="CodigoCajero" />
-
-            <div class="form-group mb-4">
-                <label asp-for="CodigoPrestamo" class="form-label">
-                    <i class="fas fa-hand-holding-usd"></i> Código de Préstamo
-                </label>
-                <input asp-for="CodigoPrestamo" class="form-control form-control-lg"
-                    placeholder="Ingrese el código del préstamo">
-                <span asp-validation-for="CodigoPrestamo" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-4">
-                <label asp-for="Monto" class="form-label">
-                    <i class="fas fa-money-bill-wave"></i> Monto a Pagar
-                </label>
-                <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input asp-for="Monto" class="form-control form-control-lg" placeholder="0.00" step="0.01">
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">Pago de Préstamo</h3>
                 </div>
-                <span asp-validation-for="Monto" class="text-danger"></span>
-            </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
 
-            <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-pagar btn-lg">
-                    <i class="fas fa-check-circle"></i> Confirmar Pago
-                </button>
-                <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
-                    asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja" class="btn btn-cancelar btn-lg">
-                    <i class="fas fa-times-circle"></i> Cancelar
-                </a>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h5>Información del Cajero</h5>
+                            <p><strong>Ubicación:</strong> @ViewBag.CajeroUbicacion</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Información de la Cuenta</h5>
+                            <p><strong>Saldo Disponible:</strong> @ViewBag.SaldoDisponible</p>
+                        </div>
+                    </div>
+
+                    <form id="pagoForm" asp-action="PagoPrestamo" method="post">
+                        <input type="hidden" asp-for="CodigoCajero" />
+                        <input type="hidden" asp-for="Numerotarjeta" />
+                        <input type="hidden" asp-for="tarjetaCodigoCaja" />
+                        <input type="hidden" asp-for="CodigoTitular" />
+                        <!--
+                        <div class="form-group">
+                            <label asp-for="CodigoPrestamo">Número de Préstamo</label>
+                            <input asp-for="CodigoPrestamo" class="form-control" autocomplete="off" />
+                            <span asp-validation-for="CodigoPrestamo" class="text-danger"></span>
+                        </div>
+-->
+                        <div class="form-group">
+                            <label asp-for="Monto">Monto a Pagar</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input asp-for="Monto" class="form-control" autocomplete="off" />
+                            </div>
+                            <span asp-validation-for="Monto" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="button" id="confirmarPagoBtn" class="btn btn-primary w-100">
+                                <i class="fas fa-money-bill-wave"></i> Realizar Pago
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
+                                asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja"
+                                class="btn btn-secondary w-100 mt-2">
+                                <i class="fas fa-arrow-left"></i> Volver
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
-@section Styles {
-    <style>
-        .pago-container {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .pago-header {
-            text-align: center;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .pago-card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .btn-pagar {
-            background-color: #28a745;
-            color: white;
-            padding: 12px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-pagar:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
-
-        .btn-cancelar {
-            background-color: #6c757d;
-            color: white;
-            padding: 12px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-cancelar:hover {
-            background-color: #5a6268;
-            transform: translateY(-2px);
-        }
-    </style>
-}
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmacionModalLabel">Confirmar Pago</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro que desea realizar un pago de <strong>$<span id="montoConfirmacion"></span></strong> al
+                    préstamo <strong><span id="prestamoConfirmacion"></span></strong>?</p>
+                <p>Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="confirmarModalBtn" class="btn btn-primary">Confirmar Pago</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @{
@@ -110,36 +97,34 @@
 
     <script>
         $(document).ready(function () {
-            // Validación personalizada del monto
-            $.validator.addMethod("minValue", function (value, element, param) {
-                return this.optional(element) || parseFloat(value) >= param;
-            }, "El monto debe ser mayor a cero");
+            // Solo permitir números y puntos en el monto
+            $('#Monto').on('input', function () {
+                this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+            });
 
-            $("#formPago").validate({
-                rules: {
-                    Monto: {
-                        required: true,
-                        number: true,
-                        minValue: 0.01
+            // Mostrar error global (por ejemplo desde el controlador)
+            @if (ViewContext.ModelState.ContainsKey("") && ViewContext.ModelState[""].Errors.Any())
+                {
+                    <text>
+                        toastr.error('@ViewContext.ModelState[""].Errors.First().ErrorMessage');
+                    </text>
+            }
+
+                // Mostrar modal de confirmación
+                $('#confirmarPagoBtn').click(function (e) {
+                    e.preventDefault();
+
+                    if ($('#pagoForm').valid()) {
+                        $('#montoConfirmacion').text($('#Monto').val());
+                        $('#prestamoConfirmacion').text($('#CodigoPrestamo').val());
+                        $('#confirmacionModal').modal('show');
                     }
-                },
-                messages: {
-                    Monto: {
-                        required: "Por favor ingrese un monto",
-                        number: "Por favor ingrese un número válido"
-                    }
-                },
-                errorElement: "span",
-                errorPlacement: function (error, element) {
-                    error.addClass("text-danger");
-                    element.closest(".form-group").append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass("is-invalid").removeClass("is-valid");
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass("is-invalid").addClass("is-valid");
-                }
+                });
+
+            // Confirmar el pago desde el modal
+            $('#confirmarModalBtn').click(function () {
+                $('#confirmacionModal').modal('hide');
+                $('#pagoForm').submit();
             });
         });
     </script>

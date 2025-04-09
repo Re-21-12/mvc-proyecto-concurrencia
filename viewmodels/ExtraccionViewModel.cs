@@ -19,5 +19,4 @@ public class ExtraccionViewModel
     public int CodigoCajero { get; set; }
 
     public int tarjetaCodigoCaja { get; set; }
-    public int CodigoCuentaOrigen { get; set; }
 }

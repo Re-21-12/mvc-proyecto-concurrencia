@@ -17,7 +17,7 @@
         <form asp-action="Extraer" method="post" id="formExtraccion">
             <input type="hidden" asp-for="CodigoCajero" />
             <input type="hidden" asp-for="CodigoTitular" />
-            <input type="hidden" asp-for="CodigoCuenta" />
+            <input type="hidden" asp-for="tarjetaCodigoCaja" />
 
             <div class="row">
 
@@ -38,7 +38,8 @@
                         <i class="fas fa-hand-holding-usd"></i> Confirmar Extracción
                     </button>
                     <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
-                        asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja" class="btn btn-cancelar btn-lg">
+                        asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja" 
+                        class="btn btn-cancelar btn-lg">
                         <i class="fas fa-times-circle"></i> Cancelar
                     </a>
                 </div>
@@ -64,7 +65,7 @@
                 </div>
                 <div class="confirmation-details p-3 bg-light rounded">
                     <p><strong>Titular:</strong> <span id="modalTitular">@Model.CodigoTitular</span></p>
-                    <p><strong>Cuenta:</strong> <span id="modalCuenta">@Model.CodigoCuenta</span></p>
+                    <p><strong>Cuenta:</strong> <span id="modalCuenta">@Model.tarjetaCodigoCaja</span></p>
                     <p><strong>Monto:</strong> <span id="modalMonto" class="fw-bold">@Model.Monto.ToString("C2")</span>
                     </p>
                 </div>
@@ -73,9 +74,10 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-1"></i> Cancelar
                 </button>
-                <button type="button" id="btnConfirmar" class="btn btn-primary">
+                <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
+                    asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja class=" btn btn-extraer btn-lg">
                     <i class="fas fa-check me-1"></i> Confirmar
-                </button>
+                </a>
             </div>
         </div>
     </div>

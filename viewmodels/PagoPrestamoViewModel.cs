@@ -15,5 +15,8 @@ public class PagoPrestamoViewModel
     public int CodigoCajero { get; set; }
 
     public int tarjetaCodigoCaja { get; set; }
-    public int CodigoCuentaOrigen { get; set; }
+    public int CodigoTitular { get; set; }
+    public int Numerotarjeta { get; set; }
+    public int CodigoCliente { get; set; }
 }
+// TODO: Arreglar regresar en vistas, arreglar extraer entrar a la vista
