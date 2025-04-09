@@ -22,6 +22,8 @@ public class TransferenciaViewModel
 
     [Required]
     public int CodigoCajero { get; set; }
+
+    public int tarjetaCodigoCaja { get; set; }
 }
 
 // Atributo personalizado para validar que dos propiedades no sean iguales

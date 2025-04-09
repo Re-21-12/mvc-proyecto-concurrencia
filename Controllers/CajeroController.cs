@@ -91,11 +91,12 @@ namespace backenddb_c.Controllers
                     var parameters = new[]
                     {
                         new OracleParameter("p_numero_tarjeta", model.NumeroTarjeta),
-                        new OracleParameter("p_pin", model.Pin)
+                        new OracleParameter("p_pin", model.Pin),
+                        //new OracleParameter("p_codigo_cajero", model.CajeroId)
                     };
-
+                    // :p_codigo_cajero
                     await _context.Database.ExecuteSqlRawAsync(
-                        "BEGIN registrar_inicio_sesion(:p_numero_tarjeta, :p_pin); END;",
+                        "BEGIN registrar_inicio_sesion(:p_numero_tarjeta, :p_pin ); END;",
                         parameters
                     );
 
@@ -124,14 +125,14 @@ namespace backenddb_c.Controllers
         // GET: Cajero/Details/5
         public async Task<IActionResult> Details(int? id, int? tarjetaCodigoCaja)
         {
-            if (id == null)
+            if (id == null || tarjetaCodigoCaja == null)
             {
                 return NotFound();
             }
 
             var cajero = await _context.Cajeros
                 .FirstOrDefaultAsync(m => m.CodigoCajero == id);
-            if (cajero == null)
+            if (cajero == null || tarjetaCodigoCaja == null)
             {
                 return NotFound();
             }
@@ -160,7 +161,7 @@ namespace backenddb_c.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Transferir(int? id, int? NumeroTarjeta)
+        public async Task<IActionResult> Transferir(int? id, int? Numerotarjeta)
         {
             try
             {
@@ -170,7 +171,7 @@ namespace backenddb_c.Controllers
                     TempData["ErrorMessage"] = "ID de cajero no válido";
                     return RedirectToAction(nameof(Index));
                 }
-                if (NumeroTarjeta == null || NumeroTarjeta < 0)
+                if (Numerotarjeta == null || Numerotarjeta < 0)
                 {
                     TempData["ErrorMessage"] = "Numero de Tarjeta no válido";
                     return RedirectToAction(nameof(Index));
@@ -182,7 +183,7 @@ namespace backenddb_c.Controllers
 
                 var caja_ahorro = await _context.CajaAhorros
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(c => c.CodigoCaja == NumeroTarjeta);
+                    .FirstOrDefaultAsync(c => c.CodigoCaja == Numerotarjeta);
 
 
                 if (cajero == null)
@@ -209,7 +210,9 @@ namespace backenddb_c.Controllers
                 // Crear y devolver el ViewModel con el código del cajero preestablecido
                 var model = new TransferenciaViewModel
                 {
-                    CodigoCajero = cajero.CodigoCajero
+                    CodigoCajero = cajero.CodigoCajero,
+                    tarjetaCodigoCaja = Numerotarjeta ?? 0,
+                    CodigoCuentaOrigen = caja_ahorro.CodigoCaja
                 };
 
                 return View(model);
@@ -295,7 +298,7 @@ namespace backenddb_c.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Extraer(int? id)
+        public async Task<IActionResult> Extraer(int? id, int? Numerotarjeta)
         {
             try
             {
@@ -309,14 +312,27 @@ namespace backenddb_c.Controllers
                     .AsNoTracking()
                     .FirstOrDefaultAsync(c => c.CodigoCajero == id);
 
+                var caja_ahorro = await _context.CajaAhorros
+                                  .AsNoTracking()
+                                  .FirstOrDefaultAsync(c => c.CodigoCaja == Numerotarjeta);
                 if (cajero == null)
                 {
                     TempData["ErrorMessage"] = $"Cajero con ID {id} no encontrado";
                     return RedirectToAction(nameof(Index));
                 }
-
+                if (caja_ahorro == null)
+                {
+                    TempData["ErrorMessage"] = $"Caja Ahorro con  {Numerotarjeta} no encontrado";
+                    return RedirectToAction(nameof(Index));
+                }
                 ViewBag.SaldoDisponible = cajero.Saldo.ToString("C2");
-                return View(new ExtraccionViewModel { CodigoCajero = cajero.CodigoCajero });
+                var model = new ExtraccionViewModel
+                {
+                    CodigoCajero = cajero.CodigoCajero,
+                    tarjetaCodigoCaja = Numerotarjeta ?? 0,
+                    CodigoCuentaOrigen = caja_ahorro.CodigoCaja
+                };
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -412,9 +428,14 @@ namespace backenddb_c.Controllers
                 }
                 ViewBag.SaldoDisponible = CajaAhorro.SaldoCaja?.ToString("C2");
 
+                var model = new PagoPrestamoViewModel
+                {
+                    CodigoCajero = cajero.CodigoCajero,
+                    tarjetaCodigoCaja = Numerotarjeta ?? 0,
+                    CodigoCuentaOrigen = CajaAhorro.CodigoCaja
+                };
 
-
-                return View(new PagoPrestamoViewModel { CodigoCajero = cajero.CodigoCajero });
+                return View(model);
             }
             catch (Exception ex)
             {

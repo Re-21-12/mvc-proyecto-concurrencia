@@ -1,6 +1,4 @@
 @model ExtraccionViewModel
-<!-- Incluir el modal de confirmación -->
-@Html.Partial("_ConfirmacionModal")
 @{
     ViewData["Title"] = "Extracción de Dinero";
 }
@@ -18,51 +16,68 @@
     <div class="extraccion-card">
         <form asp-action="Extraer" method="post" id="formExtraccion">
             <input type="hidden" asp-for="CodigoCajero" />
+            <input type="hidden" asp-for="CodigoTitular" />
+            <input type="hidden" asp-for="CodigoCuenta" />
 
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label asp-for="CodigoTitular" class="form-label">
-                            <i class="fas fa-user-tie"></i> Código del Titular
-                        </label>
-                        <input asp-for="CodigoTitular" class="form-control form-control-lg"
-                            placeholder="Ingrese el código del titular">
-                        <span asp-validation-for="CodigoTitular" class="text-danger"></span>
+
+
+                <div class="form-group mb-4">
+                    <label asp-for="Monto" class="form-label">
+                        <i class="fas fa-coins"></i> Monto a Extraer
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input asp-for="Monto" class="form-control form-control-lg" placeholder="0.00" step="0.01">
                     </div>
+                    <span asp-validation-for="Monto" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-6">
-                    <div class="form-group mb-4">
-                        <label asp-for="CodigoCuenta" class="form-label">
-                            <i class="fas fa-piggy-bank"></i> Cuenta de Ahorro
-                        </label>
-                        <input asp-for="CodigoCuenta" class="form-control form-control-lg"
-                            placeholder="Ingrese la cuenta de ahorro">
-                        <span asp-validation-for="CodigoCuenta" class="text-danger"></span>
-                    </div>
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-extraer btn-lg">
+                        <i class="fas fa-hand-holding-usd"></i> Confirmar Extracción
+                    </button>
+                    <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
+                        asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja" class="btn btn-cancelar btn-lg">
+                        <i class="fas fa-times-circle"></i> Cancelar
+                    </a>
                 </div>
-            </div>
-
-            <div class="form-group mb-4">
-                <label asp-for="Monto" class="form-label">
-                    <i class="fas fa-coins"></i> Monto a Extraer
-                </label>
-                <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input asp-for="Monto" class="form-control form-control-lg" placeholder="0.00" step="0.01">
-                </div>
-                <span asp-validation-for="Monto" class="text-danger"></span>
-            </div>
-
-            <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-extraer btn-lg">
-                    <i class="fas fa-hand-holding-usd"></i> Confirmar Extracción
-                </button>
-                <a asp-action="Details" asp-route-id="@Model.CodigoCajero" class="btn btn-cancelar btn-lg">
-                    <i class="fas fa-times-circle"></i> Cancelar
-                </a>
-            </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmacionModalLabel">
+                    <i class="fas fa-check-circle me-2"></i>Confirmar Extracción
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>¿Está seguro que desea realizar esta extracción?
+                </div>
+                <div class="confirmation-details p-3 bg-light rounded">
+                    <p><strong>Titular:</strong> <span id="modalTitular">@Model.CodigoTitular</span></p>
+                    <p><strong>Cuenta:</strong> <span id="modalCuenta">@Model.CodigoCuenta</span></p>
+                    <p><strong>Monto:</strong> <span id="modalMonto" class="fw-bold">@Model.Monto.ToString("C2")</span>
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </button>
+                <button type="button" id="btnConfirmar" class="btn btn-primary">
+                    <i class="fas fa-check me-1"></i> Confirmar
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -129,6 +144,14 @@
             background-color: #5a6268;
             transform: translateY(-2px);
         }
+
+        .confirmation-details {
+            border-left: 4px solid #17a2b8;
+        }
+
+        .btn-close-white {
+            filter: invert(1);
+        }
     </style>
 }
 
@@ -170,16 +193,30 @@
                     $(element).removeClass("is-invalid").addClass("is-valid");
                 }
             });
+
             // Interceptar el envío del formulario
             $('#formExtraccion').submit(function (e) {
                 e.preventDefault(); // Prevenir el envío automático
-                $('#confirmacionModal').modal('show'); // Mostrar el modal de confirmación
 
-                // Manejar el clic en el botón "Confirmar"
-                $('#btnConfirmar').click(function () {
-                    $('#confirmacionModal').modal('hide'); // Ocultar el modal
-                    $('#formTransferencia').unbind('submit').submit(); // Enviar el formulario
-                });
+                if (!$(this).valid()) return false;
+
+                // Actualizar datos en el modal
+                $('#modalTitular').text($('#CodigoTitular').val());
+                $('#modalCuenta').text($('#CodigoCuenta').val());
+                $('#modalMonto').text('$' + parseFloat($('#Monto').val()).toFixed(2));
+
+                $('#confirmacionModal').modal('show'); // Mostrar el modal de confirmación
+            });
+
+            // Manejar el clic en el botón "Confirmar"
+            $('#btnConfirmar').click(function () {
+                $('#confirmacionModal').modal('hide'); // Ocultar el modal
+                $('#formExtraccion').unbind('submit').submit(); // Enviar el formulario
+            });
+
+            // Limpiar eventos al cerrar el modal
+            $('#confirmacionModal').on('hidden.bs.modal', function () {
+                $('#btnConfirmar').off('click');
             });
         });
     </script>

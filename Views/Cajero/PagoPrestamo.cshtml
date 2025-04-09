@@ -7,8 +7,7 @@
     <div class="pago-header">
         <h2 class="text-center mb-4"><i class="fas fa-file-invoice-dollar"></i> Pago de Préstamo</h2>
         <div class="cajero-info mb-4">
-            <h5><i class="fas fa-atm"></i> Cajero: @ViewBag.CajeroUbicacion</h5>
-            <h5><i class="fas fa-wallet"></i> Saldo disponible: <span
+            <h5><i class="fas fa-wallet"></i> Saldo disponible del Cliente: <span
                     class="saldo-disponible">@ViewBag.SaldoDisponible</span></h5>
         </div>
     </div>
@@ -41,7 +40,8 @@
                 <button type="submit" class="btn btn-pagar btn-lg">
                     <i class="fas fa-check-circle"></i> Confirmar Pago
                 </button>
-                <a asp-action="Details" asp-route-id="@Model.CodigoCajero" class="btn btn-cancelar btn-lg">
+                <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
+                    asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja" class="btn btn-cancelar btn-lg">
                     <i class="fas fa-times-circle"></i> Cancelar
                 </a>
             </div>

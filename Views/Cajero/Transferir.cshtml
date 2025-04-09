@@ -11,10 +11,11 @@
                 <div class="card-header bg-primary-gradient text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Transferencia Bancaria</h2>
-                        <span class="badge bg-white text-primary fs-6"><i class="fas fa-atm me-1"></i> @ViewBag.CajeroUbicacion</span>
+                        <span class="badge bg-white text-primary fs-6"><i class="fas fa-atm me-1"></i>
+                            @ViewBag.CajeroUbicacion</span>
                     </div>
                 </div>
-                
+
                 <div class="card-body p-4">
                     <!-- Encabezado con saldo -->
                     <div class="saldo-card mb-4 p-3 rounded-3 bg-light-primary">
@@ -28,72 +29,54 @@
                     </div>
 
                     <!-- Formulario de transferencia -->
-                    <form asp-action="Transferir" method="post" id="formTransferencia" class="needs-validation" novalidate>
+                    <form asp-action="Transferir" method="post" id="formTransferencia" class="needs-validation"
+                        novalidate>
                         <input type="hidden" asp-for="CodigoCajero" />
-                        
+                        <input type="hidden" asp-for="CodigoTitular" />
+                        <input type="hidden" asp-for="CodigoCuentaOrigen" />
+
                         <div class="row g-4">
-                            <!-- Columna izquierda -->
-                            <div class="col-md-6">
-                                <!-- Código titular -->
-                                <div class="form-floating">
-                                    <input asp-for="CodigoTitular" class="form-control form-control-lg" 
-                                           placeholder=" " required>
-                                    <label asp-for="CodigoTitular" class="form-label">
-                                        <i class="fas fa-user-tie me-2"></i>Código del Titular
-                                    </label>
-                                    <span asp-validation-for="CodigoTitular" class="invalid-feedback"></span>
-                                </div>
-                                
-                                <!-- Cuenta origen -->
-                                <div class="form-floating mt-3">
-                                    <input asp-for="CodigoCuentaOrigen" class="form-control form-control-lg" 
-                                           placeholder=" " required>
-                                    <label asp-for="CodigoCuentaOrigen" class="form-label">
-                                        <i class="fas fa-credit-card me-2"></i>Cuenta Origen
-                                    </label>
-                                    <span asp-validation-for="CodigoCuentaOrigen" class="invalid-feedback"></span>
-                                </div>
-                            </div>
-                            
                             <!-- Columna derecha -->
                             <div class="col-md-6">
                                 <!-- Cuenta destino -->
                                 <div class="form-floating">
-                                    <input asp-for="CodigoCuentaDestino" class="form-control form-control-lg" 
-                                           placeholder=" " required>
+                                    <input asp-for="CodigoCuentaDestino" class="form-control form-control-lg"
+                                        placeholder=" " required>
                                     <label asp-for="CodigoCuentaDestino" class="form-label">
                                         <i class="fas fa-credit-card me-2"></i>Cuenta Destino
                                     </label>
                                     <span asp-validation-for="CodigoCuentaDestino" class="invalid-feedback"></span>
                                 </div>
-                                
+
                                 <!-- Monto -->
                                 <div class="form-floating mt-3">
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light"><i class="fas fa-dollar-sign"></i></span>
-                                        <input asp-for="Monto" class="form-control form-control-lg" 
-                                               placeholder=" " step="0.01" min="0.01" required>
-                                    
+                                        <span class="input-group-text bg-light"><i
+                                                class="fas fa-dollar-sign"></i></span>
+                                        <input asp-for="Monto" class="form-control form-control-lg" placeholder=" "
+                                            step="0.01" min="0.01" required>
+
                                     </div>
                                     <span asp-validation-for="Monto" class="invalid-feedback"></span>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Botones de acción -->
                         <div class="d-grid gap-3 mt-4">
                             <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold">
                                 <i class="fas fa-paper-plane me-2"></i>Confirmar Transferencia
                             </button>
-                            <a asp-action="Details" asp-route-id="@Model.CodigoCajero" 
-                               class="btn btn-outline-secondary btn-lg py-3">
+                            <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
+                                asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja"
+                                class="btn btn-outline-secondary btn-lg py-3">
                                 <i class="fas fa-times-circle me-2"></i>Cancelar
                             </a>
                         </div>
                     </form>
                 </div>
             </div>
-            
+
             <!-- Historial de transferencias -->
             @if (ViewBag.UltimasTransferencias != null && ViewBag.UltimasTransferencias.Count > 0)
             {
@@ -118,8 +101,10 @@
                                         <tr>
                                             <td>@transferencia.Fecha.ToString("g")</td>
                                             <td><span class="badge bg-light text-dark">@transferencia.CuentaDebitar</span></td>
-                                            <td><span class="badge bg-light text-dark">@transferencia.CuentaAcreditar</span></td>
-                                            <td class="text-end fw-bold @(transferencia.Monto > 0 ? "text-success" : "text-danger")">
+                                            <td><span class="badge bg-light text-dark">@transferencia.CuentaAcreditar</span>
+                                            </td>
+                                            <td
+                                                class="text-end fw-bold @(transferencia.Monto > 0 ? "text-success" : "text-danger")">
                                                 @transferencia.Monto.ToString("C2")
                                             </td>
                                         </tr>
@@ -140,7 +125,8 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Confirmar Transferencia</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="d-flex align-items-center mb-3">
@@ -188,55 +174,55 @@
             --secondary-color: #3498db;
             --success-color: #28a745;
         }
-        
+
         .transferencia-container {
             background-color: #f8f9fa;
             min-height: 100vh;
         }
-        
+
         .card {
             border-radius: 12px;
             overflow: hidden;
             border: none;
         }
-        
+
         .card-header {
             padding: 1.5rem;
         }
-        
+
         .bg-primary-gradient {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         }
-        
+
         .saldo-card {
             background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(40, 167, 69, 0.1) 100%);
             border-left: 4px solid var(--success-color);
         }
-        
+
         .form-floating {
             position: relative;
         }
-        
+
         .form-control-lg {
             padding: 1rem 1.5rem;
             font-size: 1.1rem;
         }
-        
+
         .form-control:focus {
             box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
             border-color: var(--secondary-color);
         }
-        
+
         .input-group-text {
             background-color: #f8f9fa;
         }
-        
+
         .btn-lg {
             padding: 0.8rem;
             font-size: 1.1rem;
             border-radius: 8px;
         }
-        
+
         .table th {
             font-weight: 600;
             text-transform: uppercase;
@@ -244,25 +230,25 @@
             letter-spacing: 0.5px;
             color: #6c757d;
         }
-        
+
         .transferencia-info {
             border: 1px dashed #dee2e6;
         }
-        
+
         .badge {
             font-weight: 500;
             padding: 0.5em 0.8em;
         }
-        
+
         .invalid-feedback {
             display: block;
             margin-top: 0.25rem;
         }
-        
+
         .is-invalid {
             border-color: #dc3545;
         }
-        
+
         .is-valid {
             border-color: #28a745;
         }
@@ -273,14 +259,14 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
+
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Validación personalizada
-            $.validator.addMethod("notEqual", function(value, element, param) {
+            $.validator.addMethod("notEqual", function (value, element, param) {
                 return this.optional(element) || value !== $(param).val();
             }, "No puede transferir a la misma cuenta");
-            
+
             // Configuración de validación
             $("#formTransferencia").validate({
                 rules: {
@@ -301,35 +287,35 @@
                 },
                 errorElement: "span",
                 errorClass: "invalid-feedback",
-                highlight: function(element) {
+                highlight: function (element) {
                     $(element).addClass("is-invalid").removeClass("is-valid");
                 },
-                unhighlight: function(element) {
+                unhighlight: function (element) {
                     $(element).removeClass("is-invalid").addClass("is-valid");
                 }
             });
-            
+
             // Interceptar el envío del formulario para mostrar el modal
-            $('#formTransferencia').submit(function(e) {
+            $('#formTransferencia').submit(function (e) {
                 if (!$(this).valid()) return false;
-                
+
                 e.preventDefault();
-                
+
                 // Actualizar datos en el modal
                 $('#modalOrigen').text($('#CodigoCuentaOrigen').val());
                 $('#modalDestino').text($('#CodigoCuentaDestino').val());
                 $('#modalMonto').text('$' + parseFloat($('#Monto').val()).toFixed(2));
-                
+
                 $('#confirmacionModal').modal('show');
             });
-            
+
             // Confirmar el envío del formulario
-            $('#btnConfirmar').click(function() {
+            $('#btnConfirmar').click(function () {
                 $('#formTransferencia').unbind('submit').submit();
             });
-            
+
             // Formatear automáticamente el monto
-            $('#Monto').on('blur', function() {
+            $('#Monto').on('blur', function () {
                 let value = parseFloat($(this).val());
                 if (!isNaN(value)) {
                     $(this).val(value.toFixed(2));

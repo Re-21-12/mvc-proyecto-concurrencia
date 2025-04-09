@@ -56,7 +56,8 @@
                         asp-route-numeroTarjeta="@Model.NumeroTarjeta" class="btn btn-operacion transferir">
                         <i class="fas fa-money-bill-wave"></i> Transferir
                     </a>
-                    <a asp-action="Extraer" asp-route-id="@Model?.CodigoCajero" class="btn btn-operacion extraer">
+                    <a asp-action="Extraer" asp-route-id="@Model?.CodigoCajero"
+                        asp-route-numeroTarjeta="@Model.NumeroTarjeta" class="btn btn-operacion extraer">
                         <i class="fas fa-hand-holding-usd"></i> Extraer
                     </a>
                     <a asp-action="PagoPrestamo" asp-route-id="@Model?.CodigoCajero"
