@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using backenddb_c.Data;
 using backenddb_c.Models;
 using Oracle.ManagedDataAccess.Client;
-
+using backenddb_c.Extensions;
 namespace backenddb_c.Controllers
 {
     public class CajeroController : Controller
@@ -102,17 +102,21 @@ namespace backenddb_c.Controllers
                         Numerotarjeta = tarjeta.NumeroTarjeta
                     });
                 }
+                catch (OracleException ex) when (ex.Number == 20001)
+                {
+                    this.ShowError("PIN Incorrecto", "Error en Inicio Sesion");
+                    return View(model);
+                }
                 catch (OracleException ex)
                 {
-                    Console.WriteLine($"Error en SP: {ex.Message}");
-                    TempData["ErrorMessage"] = "Error en validación: " + ex.Message;
+                    this.ShowError("Ocurrio un error", "Inicio Sesion");
+
                     return View(model);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error general: {ex.Message}");
-                TempData["ErrorMessage"] = "Error inesperado: " + ex.Message;
+                this.ShowError("Ocurrio un error", "Inicio Sesion");
                 return View(model);
             }
         }
@@ -225,6 +229,7 @@ namespace backenddb_c.Controllers
 
                 return View(model);
             }
+
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "Ocurrió un error al cargar la información del cajero";
@@ -257,7 +262,7 @@ namespace backenddb_c.Controllers
                 // Verificar que no sea la misma cuenta de origen y destino
                 if (model.CodigoCuentaOrigen == model.CodigoCuentaDestino)
                 {
-                    ModelState.AddModelError("CodigoCuentaDestino", "No puede transferir a la misma cuenta");
+                    this.ShowError("CodigoCuentaDestino No puede transferir a la misma cuenta");
                     await CargarDatosVistaTransferencia(model.CodigoCajero);
                     return View(model);
                 }
@@ -280,6 +285,18 @@ namespace backenddb_c.Controllers
                 TempData["SuccessMessage"] = $"Transferencia exitosa por {model.Monto.ToString("C2")}";
 
                 return RedirectToAction("Details", new { id = model.CodigoCajero, tarjetaCodigoCaja = model.CodigoCuentaOrigen, Numerotarjeta = model.Numerotarjeta });
+            }
+            catch (OracleException ex) when (ex.Number == 20001)
+            {
+                this.ShowError("Fondos insuficientes en la cuenta de origen", "Error en Transferencia");
+                await CargarDatosVistaTransferencia(model.CodigoCajero);
+                return View(model);
+            }
+            catch (OracleException ex) when (ex.Number == 20002)
+            {
+                this.ShowError("Una de las cuentas no existe", "Error en Transferencia");
+                await CargarDatosVistaTransferencia(model.CodigoCajero);
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -409,6 +426,21 @@ namespace backenddb_c.Controllers
                 TempData["SuccessMessage"] = $"Extracción exitosa por {model.Monto.ToString("C2")}";
                 return RedirectToAction("Details", new { id = model.CodigoCajero, tarjetaCodigoCaja = model.tarjetaCodigoCaja, Numerotarjeta = model.Numerotarjeta });
             }
+            catch (OracleException ex) when (ex.Number == 20001)
+            {
+                this.ShowError("Saldo insuficiente en la caja de ahorro", "Error en Extracción");
+                return View(model);
+            }
+            catch (OracleException ex) when (ex.Number == 20002)
+            {
+                this.ShowError("Saldo insuficiente en la caja del cajero", "Error en Extracción");
+                return View(model);
+            }
+            catch (OracleException ex) when (ex.Number == 20003)
+            {
+                this.ShowError("La caja de ahorro o el cajero no existen", "Error en Extracción");
+                return View(model);
+            }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error al realizar la extracción: {ex.Message}");
@@ -454,7 +486,7 @@ namespace backenddb_c.Controllers
 
                 var cliente = await _context.Clientes
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(t => t.CodigoCliente == caja_ahorro.CodigoCliente);    
+                    .FirstOrDefaultAsync(t => t.CodigoCliente == caja_ahorro.CodigoCliente);
                 if (tarjeta == null || caja_ahorro == null)
                 {
                     TempData["ErrorMessage"] = $"Tarjeta no encontrada o no tiene cuenta asociada";
@@ -499,11 +531,11 @@ namespace backenddb_c.Controllers
                     var parameters = new[]
                     {
                 new OracleParameter("p_numero_tarjeta", model.Numerotarjeta),
-                new OracleParameter("p_monto_pago", model.Monto)
+                new OracleParameter("p_codigo_prestamo",model.CodigoPrestamo),
             };
 
                     await _context.Database.ExecuteSqlRawAsync(
-                        "BEGIN realizar_pago_prestamo(:p_numero_tarjeta, :p_monto_pago); END;",
+                        "BEGIN realizar_pago_prestamo(:p_numero_tarjeta,:p_codigo_prestamo); END;",
                         parameters
                     );
 
@@ -516,14 +548,17 @@ namespace backenddb_c.Controllers
                 }
                 catch (OracleException ex) when (ex.Number == 20001)
                 {
-                    // Error específico de fondos insuficientes
-                    ModelState.AddModelError("Monto", "Fondos insuficientes en la cuenta");
-
-                    // Recargar saldo disponible para mostrar en la vista
-                    var cuenta = await _context.CajaAhorros
-                        .FirstOrDefaultAsync(c => c.CodigoCaja == model.tarjetaCodigoCaja);
-
-                    ViewBag.SaldoDisponible = cuenta?.SaldoCaja?.ToString("C2");
+                    this.ShowError("No se encontró ningún pago pendiente para el préstamo", "Error en Pago");
+                    return View(model);
+                }
+                catch (OracleException ex) when (ex.Number == 20002)
+                {
+                    this.ShowError($"Error al realizar el pago: {ex.Message}", "Error en Pago");
+                    return View(model);
+                }
+                catch (OracleException ex) when (ex.Number == 20003)
+                {
+                    this.ShowError("Fondos insuficientes en la caja de ahorro", "Error en Pago");
                     return View(model);
                 }
                 catch (OracleException ex)
@@ -638,5 +673,7 @@ namespace backenddb_c.Controllers
         {
             return _context.Cajeros.Any(e => e.CodigoCajero == id);
         }
+
+
     }
 }

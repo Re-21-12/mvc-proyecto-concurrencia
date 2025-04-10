@@ -262,10 +262,6 @@
 
     <script>
         $(document).ready(function () {
-            // Validación personalizada
-            $.validator.addMethod("notEqual", function (value, element, param) {
-                return this.optional(element) || value !== $(param).val();
-            }, "No puede transferir a la misma cuenta");
 
             // Configuración de validación
             $("#formTransferencia").validate({
