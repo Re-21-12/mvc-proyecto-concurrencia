@@ -41,8 +41,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<Titular> Titulars { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
-        => optionsBuilder.UseOracle("User Id=BANCARIO;Password=Alfredo+123;Data Source=localhost:1521/FREE");
+        //User Id=BANCARIO;Password=Alfredo+123;Data Source=localhost:1521/FREE
+        => optionsBuilder.UseOracle("User Id=atm;Password=atm123;Data Source=localhost:1521/FREE");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 // Configurar la conexión de Oracle en DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseOracle(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseOracle(builder.Configuration.GetConnectionString("UserConnection")));
 
 
 

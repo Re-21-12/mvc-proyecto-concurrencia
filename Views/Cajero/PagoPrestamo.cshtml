@@ -1,129 +1,272 @@
 @model PagoPrestamoViewModel
 @{
     ViewData["Title"] = "Pago de Préstamo";
+    var saldoDisponible = ViewBag.SaldoDisponible as string;
+    var cajeroUbicacion = ViewBag.CajeroUbicacion as string;
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="card-title mb-0">Pago de Préstamo</h3>
-                </div>
-                <div class="card-body">
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            @TempData["SuccessMessage"]
+<div class="container py-4">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header bg-gradient-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-hand-holding-usd me-2"></i>Pago de Préstamo
+                </h3>
+                <span class="badge bg-light text-primary fs-6">
+                    <i class="fas fa-map-marker-alt me-1"></i>@cajeroUbicacion
+                </span>
+            </div>
+        </div>
+        
+        <div class="card-body p-5">
+            <!-- Tarjeta de información de saldo -->
+            <div class="card mb-4 border-left-success">
+                <div class="card-body py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="text-success mb-1">
+                                <i class="fas fa-wallet me-2"></i>Saldo Disponible
+                            </h4>
+                            <p class="fs-3 fw-bold text-success mb-0">@saldoDisponible</p>
                         </div>
-                    }
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <h5>Información del Cajero</h5>
-                            <p><strong>Ubicación:</strong> @ViewBag.CajeroUbicacion</p>
-                        </div>
-                        <div class="col-md-6">
-                            <h5>Información de la Cuenta</h5>
-                            <p><strong>Saldo Disponible:</strong> @ViewBag.SaldoDisponible</p>
+                        <div class="col-md-4 text-end">
+                            <i class="fas fa-piggy-bank fa-3x text-success opacity-25"></i>
                         </div>
                     </div>
-
-                    <form id="pagoForm" asp-action="PagoPrestamo" method="post">
-                        <input type="hidden" asp-for="CodigoCajero" />
-                        <input type="hidden" asp-for="Numerotarjeta" />
-                        <input type="hidden" asp-for="tarjetaCodigoCaja" />
-                        <input type="hidden" asp-for="CodigoTitular" />
-                        <div class="form-group">
-                            <label asp-for="CodigoPrestamo">Número de Préstamo</label>
-                            <input asp-for="CodigoPrestamo" class="form-control" autocomplete="off" />
-                            <span asp-validation-for="CodigoPrestamo" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Monto">Monto a Pagar</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input asp-for="Monto" class="form-control" autocomplete="off" />
-                            </div>
-                            <span asp-validation-for="Monto" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mt-4">
-                            <button type="button" id="confirmarPagoBtn" class="btn btn-primary w-100">
-                                <i class="fas fa-money-bill-wave"></i> Realizar Pago
-                            </button>
-                            <a asp-action="Details" asp-route-id="@Model.CodigoCajero"
-                                asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja"
-                                class="btn btn-secondary w-100 mt-2">
-                                <i class="fas fa-arrow-left"></i> Volver
-                            </a>
-                        </div>
-                    </form>
                 </div>
             </div>
+
+            <form id="pagoForm" asp-action="PagoPrestamo" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
+                <input type="hidden" asp-for="CodigoCajero" />
+                <input type="hidden" asp-for="Numerotarjeta" />
+                <input type="hidden" asp-for="tarjetaCodigoCaja" />
+
+                <!-- Campo de código de préstamo -->
+                <div class="mb-4">
+                    <div class="form-floating">
+                        <input asp-for="CodigoPrestamo" class="form-control form-control-lg" 
+                               placeholder="Ingrese el código de préstamo" required />
+                        <label asp-for="CodigoPrestamo">Código de Préstamo</label>
+                        <span asp-validation-for="CodigoPrestamo" class="invalid-feedback"></span>
+                        <div class="form-text">Ingrese el número de préstamo que desea pagar</div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="d-grid gap-3 d-md-flex justify-content-md-end mt-5">
+                    <a asp-action="Details" 
+                       asp-route-id="@Model.CodigoCajero"
+                       asp-route-tarjetaCodigoCaja="@Model.tarjetaCodigoCaja"
+                       class="btn btn-outline-danger btn-lg px-4 me-md-2">
+                        <i class="fas fa-times-circle me-2"></i>Cancelar
+                    </a>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg px-4" id="btnPagar">
+                        <i class="fas fa-money-check-alt me-2"></i>Realizar Pago
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Footer con información adicional -->
+        <div class="card-footer bg-light py-3">
+            <div class="text-muted small">
+                <i class="fas fa-info-circle me-1"></i> El pago se procesará inmediatamente y afectará su saldo disponible.
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de Confirmación -->
-<div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="confirmacionModalLabel">Confirmar Pago</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <p>¿Está seguro que desea realizar un pago de <strong>$<span id="montoConfirmacion"></span></strong> al
-                    préstamo <strong><span id="prestamoConfirmacion"></span></strong>?</p>
-                <p>Esta acción no se puede deshacer.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" id="confirmarModalBtn" class="btn btn-primary">Confirmar Pago</button>
-            </div>
-        </div>
-    </div>
-</div>
+@section Styles {
+    <style>
+        .card {
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .card-header {
+            border-radius: 1rem 1rem 0 0 !important;
+        }
+        .form-control-lg {
+            font-size: 1.1rem;
+            padding: 1rem 1.2rem;
+        }
+        .btn-lg {
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 0.5rem;
+        }
+        .floating-label-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .swal2-confirm-btn {
+            background-color: #3085d6 !important;
+            font-size: 1rem !important;
+            padding: 0.5rem 1.5rem !important;
+        }
+        .swal2-cancel-btn {
+            background-color: #d33 !important;
+            font-size: 1rem !important;
+            padding: 0.5rem 1.5rem !important;
+        }
+    </style>
+}
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function () {
-            // Solo permitir números y puntos en el monto
-            $('#Monto').on('input', function () {
-                this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
-            });
+        $(document).ready(function() {
+            // Validación del formulario
+            (function() {
+                'use strict';
+                var forms = document.querySelectorAll('.needs-validation');
+                
+                Array.prototype.slice.call(forms)
+                    .forEach(function(form) {
+                        form.addEventListener('submit', function(event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
 
-            // Mostrar error global (por ejemplo desde el controlador)
-            @if (ViewContext.ModelState.ContainsKey("") && ViewContext.ModelState[""].Errors.Any())
-                {
-                    <text>
-                        toastr.error('@ViewContext.ModelState[""].Errors.First().ErrorMessage');
-                    </text>
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+            })();
+
+            // Mostrar SweetAlert para errores de TempData
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en el Pago',
+                        html: '<div class="text-danger">@Html.Raw(TempData["ErrorMessage"].ToString().Replace("'", "\\'"))</div>',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Entendido',
+                        customClass: {
+                            popup: 'rounded-lg',
+                            confirmButton: 'swal2-confirm-btn'
+                        }
+                    });
+                </text>
             }
 
-                // Mostrar modal de confirmación
-                $('#confirmarPagoBtn').click(function (e) {
-                    e.preventDefault();
+            // Mostrar SweetAlert para éxito de TempData
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pago Exitoso',
+                        html: '<div class="text-success">@Html.Raw(TempData["SuccessMessage"].ToString().Replace("'", "\\'"))</div>',
+                        showConfirmButton: true,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Continuar',
+                        customClass: {
+                            popup: 'rounded-lg',
+                            confirmButton: 'swal2-confirm-btn'
+                        },
+                        timer: 3000,
+                        timerProgressBar: true,
+                        willClose: () => {
+                            window.location.href = '@Url.Action("Details", new { 
+                                id = Model.CodigoCajero, 
+                                tarjetaCodigoCaja = Model.tarjetaCodigoCaja, 
+                                Numerotarjeta = Model.Numerotarjeta 
+                            })';
+                        }
+                    });
+                </text>
+            }
 
-                    if ($('#pagoForm').valid()) {
-                        $('#montoConfirmacion').text($('#Monto').val());
-                        $('#prestamoConfirmacion').text($('#CodigoPrestamo').val());
-                        $('#confirmacionModal').modal('show');
+            // Interceptar el formulario para confirmación
+            $('#pagoForm').submit(function(e) {
+                e.preventDefault();
+                
+                if (!this.checkValidity()) {
+                    e.stopPropagation();
+                    return;
+                }
+
+                const form = this;
+                
+                Swal.fire({
+                    title: 'Confirmar Pago de Préstamo',
+                    html: `
+                        <div class="text-start">
+                            <p>¿Está seguro que desea realizar este pago?</p>
+                            <div class="alert alert-warning mt-3">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Esta acción no se puede deshacer
+                            </div>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirmar Pago',
+                    cancelButtonText: 'Cancelar',
+                    focusConfirm: false,
+                    customClass: {
+                        popup: 'rounded-lg',
+                        confirmButton: 'swal2-confirm-btn',
+                        cancelButton: 'swal2-cancel-btn'
+                    },
+                    buttonsStyling: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Mostrar loader mientras se procesa
+                        Swal.fire({
+                            title: 'Procesando Pago',
+                            html: 'Por favor espere mientras procesamos su transacción...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                                form.submit();
+                            },
+                            customClass: {
+                                popup: 'rounded-lg'
+                            }
+                        });
                     }
                 });
-
-            // Confirmar el pago desde el modal
-            $('#confirmarModalBtn').click(function () {
-                $('#confirmacionModal').modal('hide');
-                $('#pagoForm').submit();
             });
+
+            // Manejar errores de validación del modelo
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <text>
+                    const errorMessages = [];
+                    @foreach (var state in ViewData.ModelState)
+                    {
+                        foreach (var error in state.Value.Errors)
+                        {
+                            <text>errorMessages.push('@Html.Raw(error.ErrorMessage.Replace("'", "\\'"))');</text>
+                        }
+                    }
+                    
+                    if (errorMessages.length > 0) {
+                        const errorHtml = errorMessages.map(msg => 
+                            `<li class="text-danger">${msg}</li>`
+                        ).join('');
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error de Validación',
+                            html: `<ul class="text-start">${errorHtml}</ul>`,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Entendido',
+                            customClass: {
+                                popup: 'rounded-lg',
+                                confirmButton: 'swal2-confirm-btn'
+                            }
+                        });
+                    }
+                </text>
+            }
         });
     </script>
 }

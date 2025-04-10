@@ -90,7 +90,7 @@ namespace backenddb_c.Controllers
                     };
                     // :p_codigo_cajero
                     await _context.Database.ExecuteSqlRawAsync(
-                        "BEGIN registrar_inicio_sesion(:p_numero_tarjeta, :p_pin, :p_codigo_cajero ); END;",
+                        "BEGIN BANCARIO.registrar_inicio_sesion(:p_numero_tarjeta, :p_pin, :p_codigo_cajero ); END;",
                         parameters
                     );
 
@@ -278,7 +278,7 @@ namespace backenddb_c.Controllers
                 };
 
                 await _context.Database.ExecuteSqlRawAsync(
-                    "BEGIN realizar_transferencia(:p_codigo_titular, :p_codigo_origen, :p_codigo_destino, :p_monto, :p_codigo_cajero); END;",
+                    "BEGIN BANCARIO.realizar_transferencia(:p_codigo_titular, :p_codigo_origen, :p_codigo_destino, :p_monto, :p_codigo_cajero); END;",
                     parameters
                 );
 
@@ -419,7 +419,7 @@ namespace backenddb_c.Controllers
                 };
 
                 await _context.Database.ExecuteSqlRawAsync(
-                    "BEGIN realizar_extraccion(:p_codigo_titular, :p_codigo_caja, :p_monto, :p_codigo_cajero); END;",
+                    "BEGIN BANCARIO.realizar_extraccion(:p_codigo_titular, :p_codigo_caja, :p_monto, :p_codigo_cajero); END;",
                     parameters
                 );
 
@@ -475,21 +475,15 @@ namespace backenddb_c.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                // Obtener información de la tarjeta y cuenta asociada
-                var tarjeta = await _context.Tarjeta
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(t => t.NumeroTarjeta == Numerotarjeta);
+
 
                 var caja_ahorro = await _context.CajaAhorros
                     .AsNoTracking()
                     .FirstOrDefaultAsync(c => c.CodigoCaja == tarjetaCodigoCaja);
 
-                var cliente = await _context.Clientes
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(t => t.CodigoCliente == caja_ahorro.CodigoCliente);
-                if (tarjeta == null || caja_ahorro == null)
+                if (caja_ahorro == null)
                 {
-                    TempData["ErrorMessage"] = $"Tarjeta no encontrada o no tiene cuenta asociada";
+                    TempData["ErrorMessage"] = $"Caja de Ahorro con ID {tarjetaCodigoCaja} no encontrado";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -499,10 +493,8 @@ namespace backenddb_c.Controllers
                 var model = new PagoPrestamoViewModel
                 {
                     CodigoCajero = cajero.CodigoCajero,
-                    Numerotarjeta = tarjeta.NumeroTarjeta,
-                    tarjetaCodigoCaja = tarjeta.CodigoCaja,
-                    CodigoTitular = tarjeta.CodigoTitular,
-                    CodigoCliente = cliente.CodigoCliente,
+                    Numerotarjeta = Numerotarjeta ?? 0,
+                    tarjetaCodigoCaja = tarjetaCodigoCaja ?? 0,
                 };
 
                 return View(model);
@@ -535,15 +527,16 @@ namespace backenddb_c.Controllers
             };
 
                     await _context.Database.ExecuteSqlRawAsync(
-                        "BEGIN realizar_pago_prestamo(:p_numero_tarjeta,:p_codigo_prestamo); END;",
+                        "BEGIN BANCARIO.realizar_pago_prestamo(:p_numero_tarjeta,:p_codigo_prestamo); END;",
                         parameters
                     );
 
-                    TempData["SuccessMessage"] = $"Pago de {model.Monto.ToString("C2")} realizado con éxito";
+                    TempData["SuccessMessage"] = $"Pago  realizado con éxito";
                     return RedirectToAction("Details", new
                     {
                         id = model.CodigoCajero,
-                        tarjetaCodigoCaja = model.tarjetaCodigoCaja
+                        tarjetaCodigoCaja = model.tarjetaCodigoCaja,
+                        Numerotarjeta = model.Numerotarjeta
                     });
                 }
                 catch (OracleException ex) when (ex.Number == 20001)
