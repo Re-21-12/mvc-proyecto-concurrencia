@@ -527,7 +527,7 @@ namespace backenddb_c.Controllers
             };
 
                     await _context.Database.ExecuteSqlRawAsync(
-                        "BEGIN BANCARIO.realizar_pago_prestamo(:p_numero_tarjeta,:p_codigo_prestamo); END;",
+                        "BEGIN BANCARIO.realizar_pago_prestamo(:p_codigo_prestamo, :p_numero_tarjeta); END;",
                         parameters
                     );
 
